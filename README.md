@@ -10,7 +10,7 @@ The software is designed to be simple enough where a viable AI bot could be prod
 The rest of this README consists of an explanation of the game. Please stay tuned for details about how to go about building your AI and how to submit your AI so that it can go head-to-head with AIs written by other participants (including some Bravo LT engineers)!
 
 
-# CodeClash Game!
+# CodeClash Game
 
 CodeClash is a simple, concurrent-turn-based strategy game where players try to amass enough fighting units to overwhelm their enemy in a single decisive battle.
 
@@ -21,7 +21,7 @@ The game is played between two players.
 
 Play happens in **rounds**, which are turn-based.
 
-Each **turn**, both players decide which actions they wish to take for that turn. Which actions are available is largely dependent on the **units** the player controls at the start of the turn. Once both players have made their decisions, the actions of both players are evaluated simultaneously.
+Each **turn**, both players decide which actions they wish to take for that turn. Available actions are largely dependent on the **units** the player controls at the start of the turn. Once both players have made their decisions, the actions of both players are evaluated simultaneously, after which the game advances to the next turn.
 
 Play within a round continues until a **clash** occurs, which decides the outcome of the round.
 
