@@ -5,7 +5,7 @@ Thank you for your interest in Bravo LT's Google I/O Extended Event Code Challen
 
 The game is designed to be simple enough to understand in 5 minutes, but interesting enough that it is entertaining to play and/or watch.
 
-The software is designed to be simple enough where a viable AI bot could be produced in a few minutes, but complex enough to provide you a platform for your ingenuity (and overwhelming strategic prowess) to shine through in your AI creation!
+The software is designed to be simple enough where a viable AI bot could be produced in a few minutes, but complex enough to provide a platform for your ingenuity (and overwhelming strategic prowess) to shine through in your AI creation!
 
 The rest of this README consists of an explanation of the game. Please stay tuned for details about how to go about building your AI and how to submit your AI so that it can go head-to-head with AIs written by other participants (including some Bravo LT engineers)!
 
