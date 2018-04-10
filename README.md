@@ -23,6 +23,8 @@ Play happens in **rounds**, which are turn-based.
 
 Each **turn**, both players decide which actions they wish to take for that turn. Available actions are largely dependent on the **units** the player controls at the start of the turn. Once both players have made their decisions, the actions of both players are evaluated simultaneously, after which the game advances to the next turn.
 
+Players are blind to each others' actions and unit counts.
+
 Play within a round continues until a **clash** occurs, which decides the outcome of the round.
 
 A single **match** consists of multiple rounds. The player which wins a majority of rounds in a match is the winner.
@@ -53,7 +55,7 @@ Clashes are triggered in one of two ways:
 
 If one player initiates a clash on a turn, but the other player does not, then the initiating player is said to be **attacking** while the other is said to be **defending**.
 
-Defending players benefit from a "home-base advantage" in the form of a bonus added to their *attack power* which is the equivalent to the attack power of a single **Soldier** unit. Furthermore, defending players survive the clash in the case where the attack power of both players is equal.
+Defending players benefit from a "home-base advantage" in the form of a bonus added to their *attack power* which is equivalent to the attack power of a single **Soldier** unit. Furthermore, defending players survive the clash in the case where the attack power of both players is equal.
 
 Attacking players, therefore, must overwhelm their opponent in order to win against a defender.
 
