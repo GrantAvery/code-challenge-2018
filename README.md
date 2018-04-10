@@ -57,7 +57,7 @@ If one player initiates a clash on a turn, but the other player does not, then t
 
 Defending players benefit from a "home-base advantage" in the form of a bonus added to their *attack power* which is equivalent to the attack power of a single **Soldier** unit. Furthermore, defending players survive the clash in the case where the attack power of both players is equal.
 
-Attacking players, therefore, must overwhelm their opponent in order to win against a defender.
+Attacking players, therefore, must overwhelm their opponent in order to win against a defender. If an attacker fails to win, they lose -- there is no draw.
 
 #### Clashes "In the Field"
 
