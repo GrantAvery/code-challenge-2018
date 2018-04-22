@@ -1,11 +1,17 @@
 class Round {
-    constructor(turns) {
+    constructor(init) {
+        var defaults = { player1: {}, player2: {}, turns: 2 },
+            init = Object.assign({}, defaults, init);
+
+        this.player1 = init.player1;
+        this.player2 = init.player2;
+        this.turns = init.turns;
+
         this.status = 'NEW';
-        this.turns = turns || 10;
-        this.turnsRemaining = turns;
+        this.turnsRemaining = this.turns;
     }
 
-    executeTurn(player1Actions, player2Actions) {
+    executeTurn() {
         if (this.status == 'FINISHED')
             throw new Error('Cannot execute turn after round is finished');
 
@@ -51,6 +57,10 @@ class Match {
 
 class DumbPlayer {
 
+    onGameStart(rules) { }
+
+    onRoundStart() { }
+
     playTurn(gameState) {
         return {
             createWorkers: 0,
@@ -59,6 +69,5 @@ class DumbPlayer {
         }
     }
 
-    onRoundEnd(outcome) {
-    }
+    onRoundEnd(outcome) { }
 }

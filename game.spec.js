@@ -10,11 +10,11 @@ describe('round', () => {
         });
         
         it('should have a configurable turn count', () => {
-            expect(new Round(3).turns).toBe(3);
+            expect(new Round({ turns: 3 }).turns).toBe(3);
         });
 
         it('should have an initial turns remaining equal to turn count', () => {
-            expect(new Round(5).turnsRemaining).toBe(5);
+            expect(new Round({ turns: 5 }).turnsRemaining).toBe(5);
         })
 
         it('should have an initial status of "NEW"', () => {
@@ -32,14 +32,14 @@ describe('round', () => {
 
     describe('turn execution', () => {
         it('should decrement the remaining turns', () => {
-            let round = new Round(5);
+            let round = new Round({ turns: 5 });
             round.executeTurn();
             round.executeTurn();
             expect(round.turnsRemaining).toBe(3);
         });
 
         it('should trigger a clash on the last turn', () => {
-            let round = new Round(1);
+            let round = new Round({ turns: 1 });
             let executeClash = spyOn(round, 'executeClash');
 
             round.executeTurn();
@@ -58,7 +58,7 @@ describe('round', () => {
 
     describe('clash', () => {
         it('should set the status to "FINISHED"', () => {
-            let round = new Round(1);
+            let round = new Round();
 
             round.executeClash();
 
