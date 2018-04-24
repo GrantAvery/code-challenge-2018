@@ -111,13 +111,13 @@ describe('round', () => {
     });
 
     it('should notify the game when the round runs out of turns', () => {
-      let game = jasmine.createSpyObj('game', ['onNoMoreTurnsInRound']);
+      let game = jasmine.createSpyObj('game', ['onNoRemainingTurnsInRound']);
 
       new Round({ game, turns: 1 })
         .start()
         .executeTurn();
 
-      expect(game.onNoMoreTurnsInRound).toHaveBeenCalled();
+      expect(game.onNoRemainingTurnsInRound).toHaveBeenCalled();
     });
 
     it('should end the round after the last turn', () => {
@@ -231,7 +231,7 @@ describe('match', () => {
         'getPlayer1TurnState',
         'getPlayer2TurnState',
         'playTurn',
-        'onNoMoreTurnsInRound',
+        'onNoRemainingTurnsInRound',
         'onRoundEnd',
         'getRoundResults',
         'onMatchEnd'
@@ -250,7 +250,7 @@ describe('match', () => {
       expect(game.getPlayer2TurnState).toHaveBeenCalledTimes(rounds * 2);
       expect(game.playTurn).toHaveBeenCalledTimes(rounds * 2);
 
-      expect(game.onNoMoreTurnsInRound).toHaveBeenCalledTimes(rounds);
+      expect(game.onNoRemainingTurnsInRound).toHaveBeenCalledTimes(rounds);
       expect(game.onRoundEnd).toHaveBeenCalledTimes(rounds);
       expect(game.getRoundResults).toHaveBeenCalledTimes(rounds);
     });

@@ -26,12 +26,17 @@ describe('Simple Code Clash Game', () => {
     it('should return the player state', () => {
       let game = new SimpleCodeClash();
       game.onRoundStart(() => {});
+      game.playTurn('TRAIN_ATTACKER', 'BUILD_DEFENSE');
 
       let p1State = game.getPlayer1TurnState(),
         p2State = game.getPlayer2TurnState();
 
-      expect(p1State).toEqual(game.player1);
-      expect(p2State).toEqual(game.player2);
+      expect(p1State.attackers).toEqual(game.player1.attackers);
+      expect(p1State.defenders).toEqual(game.player1.defenders);
+      expect(p1State.choices).toEqual(game.player1.choices);
+      expect(p2State.attackers).toEqual(game.player2.attackers);
+      expect(p2State.defenders).toEqual(game.player2.defenders);
+      expect(p2State.choices).toEqual(game.player2.choices);
     });
   });
 

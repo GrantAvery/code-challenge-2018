@@ -106,19 +106,6 @@ class SimpleCodeClash {
 
 //     getRoundRules() {}
 
-//     getPlayer1TurnState() {
-//         return Object.assign({}, this.player1);
-//     }
-
-//     getPlayer2TurnState() {
-//         return Object.assign({}, this.player2);
-//     }
-
-
-
-
-//     onNoMoreTurnsInRound() {}
-
 //     onRoundEnd() {}
 
 //     getRoundResults() {}

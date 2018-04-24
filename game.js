@@ -127,7 +127,7 @@ class Round {
     this.turnsRemaining--;
 
     if (this.turnsRemaining == 0) {
-      this.game.onNoMoreTurnsInRound();
+      this.game.onNoRemainingTurnsInRound();
       this.end();
     }
 
@@ -174,7 +174,7 @@ class GameDriver {
   getPlayer1TurnState() { return callIfExists(this.game, 'getPlayer1TurnState', arguments); }
   getPlayer2TurnState() { return callIfExists(this.game, 'getPlayer2TurnState', arguments); }
   playTurn() { return callIfExists(this.game, 'playTurn', arguments); }
-  onNoMoreTurnsInRound() { return callIfExists(this.game, 'onNoMoreTurnsInRound', arguments); }
+  onNoRemainingTurnsInRound() { return callIfExists(this.game, 'onNoRemainingTurnsInRound', arguments); }
   onRoundEnd() { callIfExists(this.game, 'onRoundEnd', arguments); }
   getRoundResults() { return callIfExists(this.game, 'getRoundResults', arguments); }
 }
