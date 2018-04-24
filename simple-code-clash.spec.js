@@ -125,7 +125,7 @@ describe('Simple Code Clash Game', () => {
       it('should fail to determine an aggressor if both players attack at once and have equal attackers', () => {
         let { player1, player2 } = game;
         game.playTurn('ATTACK', 'ATTACK');
-        
+
         expect(game.determineAggressor(player1, player2)).toBeNull();
       });
     });

@@ -13,7 +13,7 @@ class SimpleCodeClash {
     this.handlePlayerChoice(this.player2, player2Choice);
 
     if (this.isAnyPlayerAttacking()) {
-        this.triggerClash();
+      this.triggerClash();
     }
   }
 
