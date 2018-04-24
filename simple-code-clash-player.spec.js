@@ -5,10 +5,12 @@ describe('Simple Code Clash Player', () => {
   });
 
   describe('onPlayTurn', () => {
-    it('should build attacker', () => {
+    it('should build defense then train attacker', () => {
       let player = new SimpleCodeClashPlayer();
-      let choice = player.playTurn();
-      expect(choice).toBeDefined();
+      let choice1 = player.playTurn();
+      expect(choice1).toEqual('BUILD_DEFENSE');
+      let choice2 = player.playTurn();
+      expect(choice2).toEqual('TRAIN_ATTACKER');
     });
   });
 
