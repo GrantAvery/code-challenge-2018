@@ -25,3 +25,5 @@ class SimpleCodeClashPlayer {
   };
 
 }
+
+export { SimpleCodeClashPlayer };

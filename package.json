@@ -1,0 +1,22 @@
+{
+  "name": "code-challenge-2018",
+  "version": "0.0.1",
+  "description": "Bravo LT Code Challenge 2018",
+  "main": "index.js",
+  "scripts": {
+    "test": "testem"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BravoLT/code-challenge-2018.git"
+  },
+  "author": "Dave Schoutens, Ryan Graffy, Jacob Weber",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/BravoLT/code-challenge-2018/issues"
+  },
+  "homepage": "https://github.com/BravoLT/code-challenge-2018#readme",
+  "devDependencies": {
+    "jasmine": "^3.1.0"
+  }
+}

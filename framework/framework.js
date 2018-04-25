@@ -191,3 +191,5 @@ function callIfExists(obj, method, ...args) {
   if (obj && typeof obj[method] == 'function')
     return obj[method].apply(obj, ...args);
 }
+
+export { Match, Round };

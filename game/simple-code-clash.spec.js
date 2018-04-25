@@ -1,3 +1,5 @@
+import { SimpleCodeClash } from './simple-code-clash.js';
+
 describe('Simple Code Clash Game', () => {
   it('should be instantiable', () => {
     let game = new SimpleCodeClash();

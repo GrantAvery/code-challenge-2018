@@ -1,7 +1,10 @@
 {
-  "framework": "jasmine2",
+  "framework": "custom",
+  "test_page": "test.mustache",
   "src_files": [
-    "**/*.js"
+    "framework/*.js",
+    "game/*.js",
+    "bots/*.js"
   ],
   "launch_in_dev": [
     "Chrome"

@@ -1,3 +1,5 @@
+import { SimpleCodeClashPlayer } from './simple-code-clash-player.js';
+
 describe('Simple Code Clash Player', () => {
   it('should be instantiable', () => {
     let player = new SimpleCodeClashPlayer();

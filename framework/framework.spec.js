@@ -1,3 +1,5 @@
+import { Match, Round } from './framework.js';
+
 describe('round', () => {
   it('should be instantiable', () => {
     let round = new Round();

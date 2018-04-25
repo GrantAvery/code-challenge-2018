@@ -118,3 +118,5 @@ class PlayerState {
     this.choices = [];
   }
 }
+
+export { SimpleCodeClash };
