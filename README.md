@@ -1,6 +1,7 @@
 Code Challenge 2018
 ===================
 
+
 Thank you for your interest in Bravo LT's Google I/O Extended Event Code Challenge 2018 (that's a mouthful!)!  This year, instead of solving the Travelling Salesman Problem or getting artistic with your favorite esoteric language, participants will be expected to produce an **AI "bot"** for a simple game!
 
 The game is designed to be simple enough to understand in 5 minutes, but interesting enough that it is entertaining to play and/or watch.
