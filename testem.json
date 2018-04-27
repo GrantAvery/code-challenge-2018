@@ -4,7 +4,8 @@
   "src_files": [
     "framework/*.js",
     "game/*.js",
-    "bots/*.js"
+    "bots/*.js",
+	"consts/*.js"
   ],
   "launch_in_dev": [
     "Chrome"
