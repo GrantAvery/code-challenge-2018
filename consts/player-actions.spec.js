@@ -9,7 +9,7 @@ describe('PlayerActions', () =>
 		// expect(playerActions).not.toBeDefined();
 	// });
 	
-	describe('attack', () =>
+	describe('PlayerActions.attack', () =>
 	{
 		it('should be defined and the correct message', () => 
 		{
@@ -22,7 +22,7 @@ describe('PlayerActions', () =>
 		});
 		
 	});
-	describe('trainAttacker', () =>
+	describe('PlayerActions.trainAttacker', () =>
 	{
 		it('should be defined and the correct message', () => 
 		{
@@ -33,7 +33,7 @@ describe('PlayerActions', () =>
 		});
 		
 	});
-	describe('buildDefense', () =>
+	describe('PlayerActions.buildDefense', () =>
 	{
 		it('should be defined and the correct message', () => 
 		{
