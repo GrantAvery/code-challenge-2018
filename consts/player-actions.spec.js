@@ -44,5 +44,16 @@ describe('PlayerActions', () =>
 		});
 		
 	});
+	describe('PlayerActions.invalid', () =>
+	{
+		it('should be defined and the correct message', () => 
+		{
+			let invalid = PlayerActions.invalid;
+			expect(invalid).toBeDefined();
+			expect(invalid).toEqual('INVALID');
+			expect(invalid).toEqual(PlayerActions.invalid);
+		});
+		
+	});
 	
 });
