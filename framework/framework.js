@@ -103,7 +103,7 @@ class Round {
     this.turnsRemaining = this.turns;
 
     let basicRoundRules = { turns: this.turns };
-    this.game.onRoundStart(basicRoundRules);
+    this.game.onRoundStart(basicRoundRules, () => { this.end() });
 
     let roundRules = Object.assign({}, this.game.getRoundRules(), basicRoundRules);
     this.player1.onRoundStart(roundRules);
@@ -126,7 +126,7 @@ class Round {
 
     this.turnsRemaining--;
 
-    if (this.turnsRemaining == 0) {
+    if (this.turnsRemaining == 0 && this.status == 'IN_PROGRESS') {
       this.game.onNoRemainingTurnsInRound();
       this.end();
     }

@@ -1,14 +1,51 @@
 class SimpleCodeClash {
-  constructor() {
+
+  /* +++++++++++++++ */
+  /* Lifecycle Hooks */
+
+  getMatchRules() { /* No special rules to report for this game at the Match level */ }
+
+  onMatchStart() { /* Nothing special on Match start */ }
+
+  getRoundRules(roundNumber) { /* No special rules to report for this game at the Round level */ }
+
+  onRoundStart(roundRules, signalEndOfRound) {
+    this.initializeRound(signalEndOfRound);
   }
 
-  onRoundStart(endRound) {
-    this.player1 = new PlayerState();
-    this.player2 = new PlayerState();
-    this.endRound = endRound;
+  getPlayer1TurnState() {
+    return this.player1.toSimpleState();
+  }
+
+  getPlayer2TurnState() {
+    return this.player2.toSimpleState();
   }
 
   playTurn(player1Choice, player2Choice) {
+    this.handleTurn(player1Choice, player2Choice);
+  }
+
+  onNoRemainingTurnsInRound() {
+    this.triggerClash();
+  }
+
+  onRoundEnd() { /* Nothing special on Round End */ }
+
+  getRoundResults() {
+    return this.roundResults;
+  }
+
+  /* END Lifecycle Hooks */
+  /* +++++++++++++++++++ */
+
+  initializeRound(signalEndOfRound) {
+    this.player1 = new PlayerState();
+    this.player2 = new PlayerState();
+    this.signalEndOfRound = signalEndOfRound;
+    this.roundResults = null; 
+  }
+
+  handleTurn(player1Choice, player2Choice) {
     this.handlePlayerChoice(this.player1, player1Choice);
     this.handlePlayerChoice(this.player2, player2Choice);
 
@@ -17,99 +54,78 @@ class SimpleCodeClash {
     }
   }
 
-  getPlayer1TurnState() {
-    return Object.assign({}, this.player1);
-  }
-
-  getPlayer2TurnState() {
-    return Object.assign({}, this.player2);
-  }
-
   handlePlayerChoice(player, choice) {
     switch (choice) {
-      case 'TRAIN_ATTACKER':
+      case PlayerActions.TRAIN_ATTACKER:
         player.attackers++;
-        player.choices.push('TRAIN_ATTACKER');
         break;
-      case 'BUILD_DEFENSE':
+      case PlayerActions.BUILD_DEFENSE:
         player.defenders++;
-        player.choices.push('BUILD_DEFENSE');
         break;
-      case 'ATTACK':
-        player.choices.push('ATTACK');
+      case PlayerActions.ATTACK:
         break;
       default:
-        player.choices.push('INVALID');
+        choice = INVALID_ACTION;
     }
-    return player.choices[player.choices.length - 1];
+    player.choices.push(choice);
   }
 
   isAnyPlayerAttacking() {
-    return this.isPlayerAttacking(this.player1)
-      || this.isPlayerAttacking(this.player2);
-  }
-
-  isPlayerAttacking(player) {
-    return player.choices[player.choices.length - 1] == 'ATTACK';
+    return this.player1.isAttacking() || this.player2.isAttacking();
   }
 
   triggerClash() {
-    this.endRound(this.evaluateClash());
+    let winner = this.evaluateClash();
+    let result = winner === this.player1 ? RoundOutcome.PLAYER_1
+               : winner === this.player2 ? RoundOutcome.PLAYER_2
+               : RoundOutcome.DRAW;
+
+    this.results = new RoundResults(this.player1, this.player2, result);
+
+    this.signalEndOfRound();
   }
 
   evaluateClash() {
-    let aggressor = this.determineAggressor(this.player1, this.player2);
+    let aggressor = determineAggressor(this.player1, this.player2);
 
     if (!aggressor) {
-      if (this.player1.defenders == this.player2.defenders) {
-        return null;
-      } else {
-        return this.player1.defenders > this.player2.defenders ? this.player1 : this.player2;
-      }
+      return playerWithMostAttackers(this.player1, this.player2)
+          || playerWithMostDefenders(this.player1, this.player2);
     }
 
-    let defender = this.player1 === aggressor ? this.player2 : this.player1;
-    if (aggressor.attackers > defender.defenders) {
-      return aggressor;
-    } else {
-      return defender;
-    }
-  }
+    let defender = getOtherPlayer(aggressor, this.player1, this.player2);
 
-  determineAggressor(player1, player2) {
-    let isPlayer1Attacking = this.isPlayerAttacking(player1),
-      isPlayer2Attacking = this.isPlayerAttacking(player2);
-
-    let playerWithMostAttackers = (player1, player2) => {
-      if (player1.attackers == player2.attackers) {
-        return null;
-      } else {
-        return player1.attackers > player2.attackers ? player1 : player2;
-      }
-    };
-
-    if (isPlayer1Attacking && isPlayer2Attacking) {
-      return playerWithMostAttackers(player1, player2);
-    } else {
-      return isPlayer1Attacking ? player1 : player2;
-    }
-  }
-
-  onNoRemainingTurnsInRound() {
-    this.triggerClash();
+    return aggressor.attackers > defender.defenders ? aggressor : defender;
   }
 }
 
-//     onMatchStart() {}
+function determineAggressor(player1, player2) {
+  if (player1.isAttacking() && player2.isAttacking()) {
+    return playerWithMostAttackers(player1, player2);
+  } else {
+    return player1.isAttacking() ? player1 : player2;
+  }
+}
 
-//     getMatchRules() {}
+function playerWithMostAttackers(player1, player2) {
+  if (player1.attackers == player2.attackers) {
+    return null;
+  } else {
+    return player1.attackers > player2.attackers ? player1 : player2;
+  }
+}
 
-//     getRoundRules() {}
+function playerWithMostDefenders(player1, player2) {
+  if (player1.defenders == player2.defenders) {
+    return null;
+  } else {
+    return player1.defenders > player2.defenders ? player1 : player2;
+  }
+}
 
-//     onRoundEnd() {}
-
-//     getRoundResults() {}
-// }
+function getOtherPlayer(player, player1, player2) {
+  return player === player1 ? player2 : player1;
+}
 
 class PlayerState {
   constructor() {
@@ -117,6 +133,41 @@ class PlayerState {
     this.defenders = 0;
     this.choices = [];
   }
+
+  isAttacking() {
+    return this.choices.slice(-1) == PlayerActions.ATTACK;
+  }
+
+  toSimpleState() {
+    return {
+      attackers: this.attackers,
+      defenders: this.defenders
+    }
+  }
 }
 
-export { SimpleCodeClash };
+class RoundResults {
+  constructor(player1, player2, result) {
+    let { player1Attackers, player1Defenders } = player1;
+    let { player2Attackers, player2Defenders } = player2;
+    this.player1 = player1.toSimpleState();
+    this.player2 = player2.toSimpleState();
+    this.result = result;
+  }
+}
+
+const PlayerActions = {
+  TRAIN_ATTACKER: 'TRAIN_ATTACKER',
+  BUILD_DEFENSE: 'BUILD_DEFENSE',
+  ATTACK: 'ATTACK'
+}
+
+const INVALID_ACTION = 'INVALID_ACTION';
+
+const RoundOutcome = {
+  PLAYER_1: 'PLAYER_1',
+  PLAYER_2: 'PLAYER_2',
+  DRAW: 'DRAW'
+}
+
+export { SimpleCodeClash, determineAggressor, PlayerActions };
