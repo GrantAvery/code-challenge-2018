@@ -50,6 +50,14 @@ describe('BracketMatch', () => {
   });
 });
 
+describe('Bracket', () => {
+  let dummyGame = {};
+
+  it('should fail to instantiate with zero Players', () => {
+    expect(() => new Bracket(dummyGame)).toThrowError();
+  });
+});
+
 describe('Tournament', () => {
   let dummyGame = {};
 
@@ -68,20 +76,6 @@ describe('Tournament', () => {
 
       expect(tourney.players).toBeDefined();
       expect(tourney.players.length).toEqual(1);
-    });
-  });
-
-  describe('bracket creation', () => {
-    it('should fail with fewer than one Player', () => {
-      let tourney = new Tournament(dummyGame);
-      expect(() => tourney.prepareBracket()).toThrowError();
-    });
-
-    it('should be a single-level bracket with two Players', () => {
-      let tourney = new Tournament(dummyGame);
-      tourney.addPlayer({});
-      tourney.addPlayer({});
-
     });
   });
 });

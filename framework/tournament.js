@@ -14,7 +14,7 @@ class Tournament {
   }
 
   prepareBracket() {
-    this.bracket = new Bracket(this.players);
+    this.bracket = new Bracket(this.game, this.players);
     return this.bracket;
   }
 }
@@ -28,14 +28,14 @@ class Bracket {
       throw new Error('Cannot create Bracket without any Players');
     }
 
-    players = players.slice(); // Copy the array to avoid mutating original
+  //   players = players.slice(); // Copy the array to avoid mutating original
 
-    let matches = [];
+  //   let matches = [];
 
-    while (players.length > 0) {
-      let player1 = players.pop();
-      let player2 = players.pop();
-    }
+  //   while (players.length > 0) {
+  //     let player1 = players.pop();
+  //     let player2 = players.pop();
+  //   }
   }
 }
 
