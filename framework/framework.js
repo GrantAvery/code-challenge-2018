@@ -48,16 +48,16 @@ class Match {
         continue;
       }
       switch (result.winner) {
-        case 'PLAYER 1':
+        case PlayOutcome.PLAYER_1:
           player1Wins++;
           break;
-        case 'PLAYER 2':
+        case PlayOutcome.PLAYER_2:
           player2Wins++;
           break;
-        case 'DRAW':
+        case PlayOutcome.DRAW:
           draws++;
           break;
-        case 'ERROR':
+        case PlayOutcome.ERROR:
           error++;
           break;
         default:
@@ -65,7 +65,10 @@ class Match {
       }
     }
 
-    let overallResult = player1Wins > player2Wins ? 'PLAYER 1' : player1Wins < player2Wins ? 'PLAYER 2' : 'DRAW';
+    let overallResult = player1Wins > player2Wins ? PlayOutcome.PLAYER_1
+                      : player1Wins < player2Wins ? PlayOutcome.PLAYER_2
+                      : PlayOutcome.DRAW;
+
     return {
       results: { player1Wins, player2Wins, draws, error, cannotDetermine },
       overallResult
@@ -92,14 +95,14 @@ class Round {
     this.player1 = new PlayerDriver(init.player1);
     this.player2 = new PlayerDriver(init.player2);
     this.turns = init.turns || 2;
-    this.status = 'NEW';
+    this.status = RoundStatus.NEW;
   }
 
   start() {
-    if (this.status != 'NEW')
+    if (this.status != RoundStatus.NEW)
       throw new Error(`Cannot start round unless round status is NEW (Currently: ${this.status})`);
 
-    this.status = 'IN_PROGRESS';
+    this.status = RoundStatus.IN_PROGRESS;
     this.turnsRemaining = this.turns;
 
     let basicRoundRules = { turns: this.turns };
@@ -113,7 +116,7 @@ class Round {
   }
 
   executeTurn() {
-    if (this.status != 'IN_PROGRESS')
+    if (this.status != RoundStatus.IN_PROGRESS)
       throw new Error(`Cannot execute turn unless round is IN_PROGRESS (Currently: ${this.status})`);
 
     let player1TurnState = this.game.getPlayer1TurnState(),
@@ -126,7 +129,7 @@ class Round {
 
     this.turnsRemaining--;
 
-    if (this.turnsRemaining == 0 && this.status == 'IN_PROGRESS') {
+    if (this.turnsRemaining == 0 && this.status == RoundStatus.IN_PROGRESS) {
       this.game.onNoRemainingTurnsInRound();
       this.end();
     }
@@ -135,13 +138,13 @@ class Round {
   }
 
   end() {
-    if (this.status == 'FINISHED') {
+    if (this.status == RoundStatus.FINISHED) {
       return;
-    } else if (this.status != 'IN_PROGRESS') {
+    } else if (this.status != RoundStatus.IN_PROGRESS) {
       throw new Error(`Cannot execute clash unless round is IN_PROGRESS (Currently: ${this.status})`);
     }
 
-    this.status = 'FINISHED';
+    this.status = RoundStatus.FINISHED;
 
     this.player1.onRoundEnd();
     this.player2.onRoundEnd();
@@ -157,12 +160,25 @@ class Round {
   play() {
     this.start();
 
-    while (this.status == 'IN_PROGRESS') {
+    while (this.status == RoundStatus.IN_PROGRESS) {
       this.executeTurn();
     }
 
     return this.getResults();
   }
+}
+
+const PlayOutcome = {
+  PLAYER_1: 'PLAYER 1',
+  PLAYER_2: 'PLAYER 2',
+  DRAW: 'DRAW',
+  ERROR: 'ERROR'
+}
+
+const RoundStatus = {
+  NEW: 'NEW',
+  IN_PROGRESS: 'IN_PROGRESS',
+  FINISHED: 'FINISHED'
 }
 
 class GameDriver {
