@@ -1,6 +1,6 @@
 import { Match, Round } from './framework.js';
 
-describe('round', () => {
+describe('Round', () => {
   it('should be instantiable', () => {
     let round = new Round();
     expect(round).toBeDefined();
@@ -139,10 +139,10 @@ describe('round', () => {
       expect(new Round().start().end().status).toBe('FINISHED');
     });
 
-    it('should notify the players and the game that the round has ended', () => {
+    it('should notify the players that the round has ended', () => {
       let player1 = jasmine.createSpyObj('player1', ['onRoundEnd']),
         player2 = jasmine.createSpyObj('player2', ['onRoundEnd']),
-        game = jasmine.createSpyObj('game', ['onRoundEnd']);
+        game = {};
 
       new Round({ game, player1, player2 })
         .start()
@@ -150,7 +150,6 @@ describe('round', () => {
 
       expect(player1.onRoundEnd).toHaveBeenCalled();
       expect(player2.onRoundEnd).toHaveBeenCalled();
-      expect(game.onRoundEnd).toHaveBeenCalled();
     });
   });
 
@@ -171,7 +170,7 @@ describe('round', () => {
   });
 });
 
-describe('match', () => {
+describe('Match', () => {
   it('should be instantiable', () => {
     let match = new Match();
     expect(match).toBeDefined();
@@ -234,8 +233,6 @@ describe('match', () => {
         'getPlayer2TurnState',
         'playTurn',
         'onNoRemainingTurnsInRound',
-        'onRoundEnd',
-        'getRoundResults',
         'onMatchEnd'
       ]);
       let rounds = 3;
@@ -253,8 +250,6 @@ describe('match', () => {
       expect(game.playTurn).toHaveBeenCalledTimes(rounds * 2);
 
       expect(game.onNoRemainingTurnsInRound).toHaveBeenCalledTimes(rounds);
-      expect(game.onRoundEnd).toHaveBeenCalledTimes(rounds);
-      expect(game.getRoundResults).toHaveBeenCalledTimes(rounds);
     });
   });
 

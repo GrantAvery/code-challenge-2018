@@ -39,15 +39,40 @@ class Match {
     return this;
   }
 
-  getMatchResults() {
-    let player1Wins, player2Wins, draws, cannotDetermine, error = 0;
+  getResult() {
+    return new MatchResult(this.roundResults);
+  }
+
+  play() {
+    this.start();
+
+    while (this.roundResults.length < this.matchRules.rounds) {
+      this.executeRound();
+    }
+
+    return this.getResult();
+  }
+}
+
+class MatchResult {
+  constructor(roundResults) {
+    this.roundResults = roundResults;
+    this.compute();
+  }
+
+  compute() {
+    let player1Wins = 0,
+      player2Wins = 0,
+      draws = 0,
+      ambiguous = 0,
+      error = 0;
 
     for (var result of this.roundResults) {
-      if (!result || !result.winner) {
-        cannotDetermine++;
+      if (!result || !result.outcome) {
+        ambiguous++;
         continue;
       }
-      switch (result.winner) {
+      switch (result.outcome) {
         case PlayOutcome.PLAYER_1:
           player1Wins++;
           break;
@@ -61,28 +86,15 @@ class Match {
           error++;
           break;
         default:
-          cannotDetermine++;
+          ambiguous++;
       }
     }
 
-    let overallResult = player1Wins > player2Wins ? PlayOutcome.PLAYER_1
-                      : player1Wins < player2Wins ? PlayOutcome.PLAYER_2
-                      : PlayOutcome.DRAW;
+    this.roundTotals = { player1Wins, player2Wins, draws, error, ambiguous };
 
-    return {
-      results: { player1Wins, player2Wins, draws, error, cannotDetermine },
-      overallResult
-    }
-  }
-
-  play() {
-    this.start();
-
-    while (this.roundResults.length < this.matchRules.rounds) {
-      this.executeRound();
-    }
-
-    return this.getMatchResults();
+    this.outcome = player1Wins > player2Wins ? PlayOutcome.PLAYER_1
+                 : player1Wins < player2Wins ? PlayOutcome.PLAYER_2
+                 : PlayOutcome.DRAW;
   }
 }
 
@@ -90,10 +102,11 @@ class Round {
   constructor(config) {
     let init = Object.assign({}, config);
 
-    this.game = new GameDriver(init.game);
+    this.game = (init.game instanceof GameDriver) ? init.game : new GameDriver(init.game);
 
-    this.player1 = new PlayerDriver(init.player1);
-    this.player2 = new PlayerDriver(init.player2);
+    this.player1 = (init.player1 instanceof PlayerDriver) ? init.player1 : new PlayerDriver(init.player1);
+    this.player2 = (init.player2 instanceof PlayerDriver) ? init.player2 : new PlayerDriver(init.player2);
+
     this.turns = init.turns || 2;
     this.status = RoundStatus.NEW;
   }
@@ -106,7 +119,8 @@ class Round {
     this.turnsRemaining = this.turns;
 
     let basicRoundRules = { turns: this.turns };
-    this.game.onRoundStart(basicRoundRules, () => { this.end() });
+    let endRoundCallback = (roundResult) => this.end(roundResult);
+    this.game.onRoundStart(basicRoundRules, endRoundCallback);
 
     let roundRules = Object.assign({}, this.game.getRoundRules(), basicRoundRules);
     this.player1.onRoundStart(roundRules);
@@ -137,24 +151,25 @@ class Round {
     return this;
   }
 
-  end() {
+  end(roundResult) {
     if (this.status == RoundStatus.FINISHED) {
       return;
     } else if (this.status != RoundStatus.IN_PROGRESS) {
-      throw new Error(`Cannot execute clash unless round is IN_PROGRESS (Currently: ${this.status})`);
+      throw new Error(`Cannot end Round unless it is IN_PROGRESS (Currently: ${this.status})`);
     }
+
+    this.result = roundResult || new RoundResult(PlayOutcome.ERROR);
 
     this.status = RoundStatus.FINISHED;
 
-    this.player1.onRoundEnd();
-    this.player2.onRoundEnd();
-    this.game.onRoundEnd();
+    this.player1.onRoundEnd(roundResult);
+    this.player2.onRoundEnd(roundResult);
 
     return this;
   }
 
-  getResults() {
-    return this.game.getRoundResults();
+  getResult() {
+    return this.result;
   }
 
   play() {
@@ -164,7 +179,7 @@ class Round {
       this.executeTurn();
     }
 
-    return this.getResults();
+    return this.getResult();
   }
 }
 
@@ -181,8 +196,14 @@ const RoundStatus = {
   FINISHED: 'FINISHED'
 }
 
+class RoundResult {
+  constructor(outcome) {
+    this.outcome = outcome;
+  }
+}
+
 class GameDriver {
-  constructor(game) { this.game = game; }
+  constructor(game) { this.meta = 'GameDriver'; this.game = game; }
   onMatchStart() { callIfExists(this.game, 'onMatchStart', arguments); }
   getMatchRules() { return callIfExists(this.game, 'getMatchRules', arguments); }
   onRoundStart() { callIfExists(this.game, 'onRoundStart', arguments); }
@@ -191,12 +212,10 @@ class GameDriver {
   getPlayer2TurnState() { return callIfExists(this.game, 'getPlayer2TurnState', arguments); }
   playTurn() { return callIfExists(this.game, 'playTurn', arguments); }
   onNoRemainingTurnsInRound() { return callIfExists(this.game, 'onNoRemainingTurnsInRound', arguments); }
-  onRoundEnd() { callIfExists(this.game, 'onRoundEnd', arguments); }
-  getRoundResults() { return callIfExists(this.game, 'getRoundResults', arguments); }
 }
 
 class PlayerDriver {
-  constructor(player) { this.player = player; }
+  constructor(player) { this.meta = 'PlayerDriver'; this.player = player; }
   onMatchStart() { callIfExists(this.player, 'onMatchStart', arguments); }
   onRoundStart() { callIfExists(this.player, 'onRoundStart', arguments); }
   playTurn() { return callIfExists(this.player, 'playTurn', arguments); }
@@ -208,4 +227,4 @@ function callIfExists(obj, method, ...args) {
     return obj[method].apply(obj, ...args);
 }
 
-export { Match, Round };
+export { Match, MatchResult, Round, RoundResult, PlayOutcome };

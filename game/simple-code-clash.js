@@ -1,3 +1,5 @@
+import { PlayOutcome, RoundResult } from '../framework/framework.js';
+
 class SimpleCodeClash {
 
   /* +++++++++++++++ */
@@ -29,12 +31,6 @@ class SimpleCodeClash {
     this.triggerClash();
   }
 
-  onRoundEnd() { /* Nothing special on Round End */ }
-
-  getRoundResults() {
-    return this.roundResults;
-  }
-
   /* END Lifecycle Hooks */
   /* +++++++++++++++++++ */
 
@@ -42,7 +38,7 @@ class SimpleCodeClash {
     this.player1 = new PlayerState();
     this.player2 = new PlayerState();
     this.signalEndOfRound = signalEndOfRound;
-    this.roundResults = null; 
+    this.roundResult = null; 
   }
 
   handleTurn(player1Choice, player2Choice) {
@@ -76,13 +72,13 @@ class SimpleCodeClash {
 
   triggerClash() {
     let winner = this.evaluateClash();
-    let result = winner === this.player1 ? RoundOutcome.PLAYER_1
-               : winner === this.player2 ? RoundOutcome.PLAYER_2
-               : RoundOutcome.DRAW;
+    let result = winner === this.player1 ? PlayOutcome.PLAYER_1
+               : winner === this.player2 ? PlayOutcome.PLAYER_2
+               : PlayOutcome.DRAW;
 
-    this.results = new RoundResults(this.player1, this.player2, result);
+    this.roundResult = new GameRoundResult(this.player1, this.player2, result);
 
-    this.signalEndOfRound();
+    this.signalEndOfRound(this.roundResult);
   }
 
   evaluateClash() {
@@ -146,13 +142,14 @@ class PlayerState {
   }
 }
 
-class RoundResults {
-  constructor(player1, player2, result) {
+class GameRoundResult extends RoundResult {
+  constructor(player1, player2, outcome) {
+    super(outcome);
     let { player1Attackers, player1Defenders } = player1;
     let { player2Attackers, player2Defenders } = player2;
     this.player1 = player1.toSimpleState();
     this.player2 = player2.toSimpleState();
-    this.result = result;
+    this.outcome = outcome;
   }
 }
 
@@ -163,11 +160,5 @@ const PlayerActions = {
 }
 
 const INVALID_ACTION = 'INVALID_ACTION';
-
-const RoundOutcome = {
-  PLAYER_1: 'PLAYER_1',
-  PLAYER_2: 'PLAYER_2',
-  DRAW: 'DRAW'
-}
 
 export { SimpleCodeClash, determineAggressor, PlayerActions };
