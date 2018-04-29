@@ -1,4 +1,4 @@
-import { PlayerActions } from "../game/simple-code-clash";
+import { PlayerActions } from "../game/simple-code-clash.js";
 
 // TODO: Should we import these and use them?
 // import { PlayOutcome, RoundResult } from '../framework/framework.js';
