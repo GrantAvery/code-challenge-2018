@@ -188,13 +188,13 @@ const PlayOutcome = {
   PLAYER_2: 'PLAYER 2',
   DRAW: 'DRAW',
   ERROR: 'ERROR'
-}
+};
 
 const RoundStatus = {
   NEW: 'NEW',
   IN_PROGRESS: 'IN_PROGRESS',
   FINISHED: 'FINISHED'
-}
+};
 
 class RoundResult {
   constructor(outcome) {
@@ -227,4 +227,4 @@ function callIfExists(obj, method, ...args) {
     return obj[method].apply(obj, ...args);
 }
 
-export { Match, MatchResult, Round, RoundResult, PlayOutcome };
+export { Match, MatchResult, Round, RoundResult, PlayOutcome, RoundStatus };

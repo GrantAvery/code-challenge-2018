@@ -1,3 +1,5 @@
+import { PlayerActions } from '../game/simple-code-clash.js';
+
 class SimpleCodeClashPlayer {
 
   constructor() {
@@ -15,9 +17,9 @@ class SimpleCodeClashPlayer {
   playTurn() {
     this.turnNumber++;
     if (this.turnNumber == 1) {
-      return 'BUILD_DEFENSE';
+      return PlayerActions.BUILD_DEFENSE;
     } else {
-      return 'TRAIN_ATTACKER';
+      return PlayerActions.TRAIN_ATTACKER;
     }
   }
 
