@@ -1,4 +1,4 @@
-import { Match, Round } from './framework.js';
+import { Match, Round, RoundStatus } from './framework.js';
 
 describe('Round', () => {
   it('should be instantiable', () => {
@@ -16,13 +16,13 @@ describe('Round', () => {
     });
 
     it('should have an initial status of "NEW"', () => {
-      expect(new Round().status).toBe('NEW');
+      expect(new Round().status).toBe(RoundStatus.NEW);
     });
   });
 
   describe('start', () => {
     it('should set the status to "IN_PROGRESS"', () => {
-      expect(new Round().start().status).toBe('IN_PROGRESS');
+      expect(new Round().start().status).toBe(RoundStatus.IN_PROGRESS);
     });
 
     it('should have a turns remaining equal to turn count', () => {
@@ -63,7 +63,7 @@ describe('Round', () => {
 
     it('should fail if the round is already FINISHED', () => {
       let round = new Round();
-      round.status = 'FINISHED';
+      round.status = RoundStatus.FINISHED;
 
       expect(() => { round.executeTurn() }).toThrow();
     });
@@ -136,7 +136,7 @@ describe('Round', () => {
 
   describe('end', () => {
     it('should set the status to "FINISHED"', () => {
-      expect(new Round().start().end().status).toBe('FINISHED');
+      expect(new Round().start().end().status).toBe(RoundStatus.FINISHED);
     });
 
     it('should notify the players that the round has ended', () => {
