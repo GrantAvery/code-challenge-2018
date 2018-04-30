@@ -1,5 +1,5 @@
 import { Player } from './player.js';
-import { PlayerActions } from "../game/simple-code-clash.js";
+import { PlayerActions } from "../game/game-of-drones.js";
 
 describe('Base Player Class', () => {
   it('should be instantiable', () => {

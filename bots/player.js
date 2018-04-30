@@ -1,4 +1,4 @@
-import { PlayerActions } from "../game/simple-code-clash.js";
+import { PlayerActions } from "../game/game-of-drones.js";
 
 // TODO: Should we import these and use them?
 // import { PlayOutcome, RoundResult } from '../framework/framework.js';
@@ -19,9 +19,6 @@ class Player {
 	playTurn() {
 
 	  // TODO: figure out what we want to return
-    //return PlayerActions.TRAIN_ATTACKER;
-    //return PlayerActions.BUILD_DEFENSE;
-
 		return PlayerActions.ATTACK;
 	}
 	

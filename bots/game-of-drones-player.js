@@ -1,6 +1,6 @@
-import { PlayerActions } from '../game/simple-code-clash.js';
+import { PlayerActions } from '../game/game-of-drones.js';
 
-class SimpleCodeClashPlayer {
+class GameOfDronesPlayer {
 
   constructor() {
     this.onMatchStart();
@@ -16,8 +16,8 @@ class SimpleCodeClashPlayer {
 
   playTurn() {
     this.turnNumber++;
-    if (this.turnNumber == 1) {
-      return PlayerActions.BUILD_DEFENSE;
+    if (this.turnNumber === 1) {
+      return PlayerActions.BUILD_WORKER;
     } else {
       return PlayerActions.TRAIN_ATTACKER;
     }
@@ -28,4 +28,4 @@ class SimpleCodeClashPlayer {
 
 }
 
-export { SimpleCodeClashPlayer };
+export { GameOfDronesPlayer };

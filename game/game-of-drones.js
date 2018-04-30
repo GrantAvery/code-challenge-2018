@@ -1,6 +1,6 @@
 import { PlayOutcome, RoundResult } from '../framework/framework.js';
 
-class SimpleCodeClash {
+class GameOfDrones {
 
   /* +++++++++++++++ */
   /* Lifecycle Hooks */
@@ -55,8 +55,8 @@ class SimpleCodeClash {
       case PlayerActions.TRAIN_ATTACKER:
         player.attackers++;
         break;
-      case PlayerActions.BUILD_DEFENSE:
-        player.defenders++;
+      case PlayerActions.BUILD_WORKER:
+        player.workers++;
         break;
       case PlayerActions.ATTACK:
         break;
@@ -85,13 +85,12 @@ class SimpleCodeClash {
     let aggressor = determineAggressor(this.player1, this.player2);
 
     if (!aggressor) {
-      return playerWithMostAttackers(this.player1, this.player2)
-          || playerWithMostDefenders(this.player1, this.player2);
+      return playerWithMostAttackers(this.player1, this.player2);
     }
 
     let defender = getOtherPlayer(aggressor, this.player1, this.player2);
 
-    return aggressor.attackers > defender.defenders ? aggressor : defender;
+    return aggressor.attackers > defender.attackers ? aggressor : defender;
   }
 }
 
@@ -111,14 +110,6 @@ function playerWithMostAttackers(player1, player2) {
   }
 }
 
-function playerWithMostDefenders(player1, player2) {
-  if (player1.defenders == player2.defenders) {
-    return null;
-  } else {
-    return player1.defenders > player2.defenders ? player1 : player2;
-  }
-}
-
 function getOtherPlayer(player, player1, player2) {
   return player === player1 ? player2 : player1;
 }
@@ -126,7 +117,7 @@ function getOtherPlayer(player, player1, player2) {
 class PlayerState {
   constructor() {
     this.attackers = 1;
-    this.defenders = 0;
+    this.workers = 1;
     this.choices = [];
   }
 
@@ -137,7 +128,7 @@ class PlayerState {
   toSimpleState() {
     return {
       attackers: this.attackers,
-      defenders: this.defenders
+      workers: this.workers
     }
   }
 }
@@ -145,8 +136,8 @@ class PlayerState {
 class GameRoundResult extends RoundResult {
   constructor(player1, player2, outcome) {
     super(outcome);
-    let { player1Attackers, player1Defenders } = player1;
-    let { player2Attackers, player2Defenders } = player2;
+    let { player1Attackers, player1Workers } = player1;
+    let { player2Attackers, player2Workers } = player2;
     this.player1 = player1.toSimpleState();
     this.player2 = player2.toSimpleState();
     this.outcome = outcome;
@@ -155,10 +146,10 @@ class GameRoundResult extends RoundResult {
 
 const PlayerActions = {
   TRAIN_ATTACKER: 'TRAIN_ATTACKER',
-  BUILD_DEFENSE: 'BUILD_DEFENSE',
+  BUILD_WORKER: 'BUILD_WORKER',
   ATTACK: 'ATTACK'
 };
 
 const INVALID_ACTION = 'INVALID_ACTION';
 
-export { SimpleCodeClash, determineAggressor, PlayerActions };
+export { GameOfDrones, determineAggressor, PlayerActions };
