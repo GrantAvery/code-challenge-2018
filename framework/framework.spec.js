@@ -15,6 +15,13 @@ describe('Round', () => {
       expect(new Round({ turns: 3 }).turns).toBe(3);
     });
 
+    it('should decide turn count based on game, then config, then defaults', () => {
+      let game = { getRoundRules() { return { turns: 10 }}};
+      expect(new Round({ game, turns: 5 }).turns).toBe(10);
+      expect(new Round({ turns: 5 }).turns).toBe(5);
+      expect(new Round().turns).toBe(2);
+    });
+
     it('should have an initial status of "NEW"', () => {
       expect(new Round().status).toBe(RoundStatus.NEW);
     });
@@ -176,6 +183,12 @@ describe('Match', () => {
     expect(match).toBeDefined();
   });
 
+  describe('initial state', () => {
+    it('should have default round count', () => {
+      expect(new Match().rounds).toBeDefined();
+    });
+  });
+
   describe('start', () => {
     it('should notify players that match is starting', () => {
       let game = jasmine.createSpyObj('game', ['onMatchStart']),
@@ -195,7 +208,7 @@ describe('Match', () => {
         player2 = jasmine.createSpyObj('player2', ['onMatchStart']),
         gameGetMatchRules = spyOn(game, 'getMatchRules').and.callThrough();
 
-      new Match({ game, player1, player2, matchRules: { rounds: 1 } }).start();
+      new Match({ game, player1, player2, rounds: 1 }).start();
 
       expect(gameGetMatchRules).toHaveBeenCalled();
       expect(player1.onMatchStart).toHaveBeenCalledWith({ rounds: 1, fancyRule: 'win' });
@@ -237,7 +250,7 @@ describe('Match', () => {
       ]);
       let rounds = 3;
 
-      let match = new Match({ game, matchRules: { rounds } }).play();
+      let match = new Match({ game, rounds }).play();
 
       expect(game.onMatchStart).toHaveBeenCalledTimes(1);
       expect(game.getMatchRules).toHaveBeenCalledTimes(1);

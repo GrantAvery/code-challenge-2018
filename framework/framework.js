@@ -4,8 +4,7 @@ class Match {
       game: {},
       player1: {},
       player2: {},
-      matchRules: { rounds: 7 },
-      roundRules: { turns: (rules, roundNumber) => null } // Allow Round default to apply
+      rounds: 7,
     };
     let init = Object.assign({}, defaults, config);
 
@@ -13,26 +12,28 @@ class Match {
     this.player1 = new PlayerDriver(init.player1);
     this.player2 = new PlayerDriver(init.player2);
 
-    this.matchRules = Object.assign({}, defaults.matchRules, init.matchRules);
-    this.roundRules = Object.assign({}, defaults.roundRules, init.roundRules);
+    this.rules = Object.assign({}, this.game.getMatchRules());
+    this.rules.rounds = this.rules.rounds || init.rounds;
+
+    this.rounds = this.rules.rounds;
+    if (this.rounds < 1) {
+      throw new Error('Match must have at least 1 Round');
+    }
 
     this.roundResults = [];
   }
 
   start() {
-    this.game.onMatchStart(this.matchRules);
-
-    let matchRules = Object.assign({}, this.game.getMatchRules(), this.matchRules);
-
-    this.player1.onMatchStart(matchRules); // TODO: give match rules
-    this.player2.onMatchStart(matchRules);
+    this.game.onMatchStart(this.rules);
+    this.player1.onMatchStart(this.rules);
+    this.player2.onMatchStart(this.rules);
 
     return this;
   }
 
   executeRound() {
-    let { game, player1, player2, roundRules } = this;
-    let round = new Round({ game, player1, player2, roundRules });
+    let { game, player1, player2 } = this;
+    let round = new Round({ game, player1, player2 });
 
     this.roundResults.push(round.play());
 
@@ -46,7 +47,7 @@ class Match {
   play() {
     this.start();
 
-    while (this.roundResults.length < this.matchRules.rounds) {
+    while (this.roundResults.length < this.rounds) {
       this.executeRound();
     }
 
@@ -62,10 +63,10 @@ class MatchResult {
 
   compute() {
     let player1Wins = 0,
-      player2Wins = 0,
-      draws = 0,
-      ambiguous = 0,
-      error = 0;
+        player2Wins = 0,
+        draws = 0,
+        ambiguous = 0,
+        error = 0;
 
     for (var result of this.roundResults) {
       if (!result || !result.outcome) {
@@ -100,44 +101,57 @@ class MatchResult {
 
 class Round {
   constructor(config) {
-    let init = Object.assign({}, config);
+    let defaults = {
+      game: {},
+      player1: {},
+      player2: {},
+      turns: 2
+    }
+    let init = Object.assign({}, defaults, config);
 
     this.game = (init.game instanceof GameDriver) ? init.game : new GameDriver(init.game);
-
     this.player1 = (init.player1 instanceof PlayerDriver) ? init.player1 : new PlayerDriver(init.player1);
     this.player2 = (init.player2 instanceof PlayerDriver) ? init.player2 : new PlayerDriver(init.player2);
 
-    this.turns = init.turns || 2;
+    this.rules = Object.assign({}, this.game.getRoundRules());
+
+    this.rules.turns = this.rules.turns || init.turns;
+
+    this.turns = this.rules.turns;
+    if (this.turns < 1) {
+      throw new Error('Round must have at least 1 turn');
+    }
+
     this.status = RoundStatus.NEW;
   }
 
   start() {
-    if (this.status != RoundStatus.NEW)
+    if (this.status != RoundStatus.NEW) {
       throw new Error(`Cannot start round unless round status is NEW (Currently: ${this.status})`);
+    }
 
     this.status = RoundStatus.IN_PROGRESS;
     this.turnsRemaining = this.turns;
 
-    let basicRoundRules = { turns: this.turns };
     let endRoundCallback = (roundResult) => this.end(roundResult);
-    this.game.onRoundStart(basicRoundRules, endRoundCallback);
+    this.game.onRoundStart(this.rules, endRoundCallback);
 
-    let roundRules = Object.assign({}, this.game.getRoundRules(), basicRoundRules);
-    this.player1.onRoundStart(roundRules);
-    this.player2.onRoundStart(roundRules);
+    this.player1.onRoundStart(this.rules);
+    this.player2.onRoundStart(this.rules);
 
     return this;
   }
 
   executeTurn() {
-    if (this.status != RoundStatus.IN_PROGRESS)
+    if (this.status != RoundStatus.IN_PROGRESS) {
       throw new Error(`Cannot execute turn unless round is IN_PROGRESS (Currently: ${this.status})`);
+    }
 
     let player1TurnState = this.game.getPlayer1TurnState(),
-      player2TurnState = this.game.getPlayer2TurnState();
+        player2TurnState = this.game.getPlayer2TurnState();
 
     let player1Actions = this.player1.playTurn(player1TurnState),
-      player2Actions = this.player2.playTurn(player2TurnState);
+        player2Actions = this.player2.playTurn(player2TurnState);
 
     this.game.playTurn(player1Actions, player2Actions);
 
@@ -204,10 +218,10 @@ class RoundResult {
 
 class GameDriver {
   constructor(game) { this.meta = 'GameDriver'; this.game = game; }
-  onMatchStart() { callIfExists(this.game, 'onMatchStart', arguments); }
   getMatchRules() { return callIfExists(this.game, 'getMatchRules', arguments); }
-  onRoundStart() { callIfExists(this.game, 'onRoundStart', arguments); }
+  onMatchStart() { callIfExists(this.game, 'onMatchStart', arguments); }
   getRoundRules() { return callIfExists(this.game, 'getRoundRules', arguments); }
+  onRoundStart() { callIfExists(this.game, 'onRoundStart', arguments); }
   getPlayer1TurnState() { return callIfExists(this.game, 'getPlayer1TurnState', arguments); }
   getPlayer2TurnState() { return callIfExists(this.game, 'getPlayer2TurnState', arguments); }
   playTurn() { return callIfExists(this.game, 'playTurn', arguments); }
