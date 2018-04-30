@@ -1,5 +1,7 @@
 import { PlayOutcome, RoundResult } from '../framework/framework.js';
 
+const DEFENDER_ADVANTAGE_BONUS = 1;
+
 class GameOfDrones {
 
   /* +++++++++++++++ */
@@ -9,7 +11,9 @@ class GameOfDrones {
 
   onMatchStart() { /* Nothing special on Match start */ }
 
-  getRoundRules(roundNumber) { /* No special rules to report for this game at the Round level */ }
+  getRoundRules() {
+    return { turns: 10 };
+  }
 
   onRoundStart(roundRules, signalEndOfRound) {
     this.initializeRound(signalEndOfRound);
@@ -23,8 +27,8 @@ class GameOfDrones {
     return this.player2.toSimpleState();
   }
 
-  playTurn(player1Choice, player2Choice) {
-    this.handleTurn(player1Choice, player2Choice);
+  playTurn(player1Actions, player2Actions) {
+    this.handleTurn(player1Actions, player2Actions);
   }
 
   onNoRemainingTurnsInRound() {
@@ -41,29 +45,37 @@ class GameOfDrones {
     this.roundResult = null; 
   }
 
-  handleTurn(player1Choice, player2Choice) {
-    this.handlePlayerChoice(this.player1, player1Choice);
-    this.handlePlayerChoice(this.player2, player2Choice);
+  handleTurn(player1Actions, player2Actions) {
+    this.handlePlayerActions(this.player1, player1Actions);
+    this.handlePlayerActions(this.player2, player2Actions);
 
     if (this.isAnyPlayerAttacking()) {
       this.triggerClash();
     }
   }
 
-  handlePlayerChoice(player, choice) {
-    switch (choice) {
-      case PlayerActions.TRAIN_ATTACKER:
-        player.attackers++;
-        break;
-      case PlayerActions.BUILD_WORKER:
-        player.workers++;
-        break;
-      case PlayerActions.ATTACK:
-        break;
-      default:
-        choice = INVALID_ACTION;
+  handlePlayerActions(player, actions) {
+    let productionCapacity = player.producers,
+        newProducers = actions.newProducers || 0,
+        newSoldiers = actions.newSoldiers || 0;
+
+    if (newProducers < productionCapacity) {
+      productionCapacity -= newProducers;
+    } else {
+      newProducers = productionCapacity;
+      productionCapacity = 0;
     }
-    player.choices.push(choice);
+
+    if (newSoldiers < productionCapacity) {
+      productionCapacity -= newSoldiers;
+    } else {
+      newSoldiers = productionCapacity;
+      productionCapacity = 0;
+    }
+
+    player.producers += newProducers;
+    player.soldiers += newSoldiers;
+    player.actions.push(actions);
   }
 
   isAnyPlayerAttacking() {
@@ -83,31 +95,35 @@ class GameOfDrones {
 
   evaluateClash() {
     let aggressor = determineAggressor(this.player1, this.player2);
-
     if (!aggressor) {
-      return playerWithMostAttackers(this.player1, this.player2);
+      return decideSoldierVsSoldierClash(this.player1, this.player2);
+    } else {
+      let defender = getOtherPlayer(aggressor, this.player1, this.player2);
+      return decideAggressorVsDefenderClash(aggressor, defender);
     }
-
-    let defender = getOtherPlayer(aggressor, this.player1, this.player2);
-
-    return aggressor.attackers > defender.attackers ? aggressor : defender;
   }
 }
 
 function determineAggressor(player1, player2) {
-  if (player1.isAttacking() && player2.isAttacking()) {
-    return playerWithMostAttackers(player1, player2);
+  if (player1.isAttacking() == player2.isAttacking()) {
+    return null;
   } else {
     return player1.isAttacking() ? player1 : player2;
   }
 }
 
-function playerWithMostAttackers(player1, player2) {
-  if (player1.attackers == player2.attackers) {
+function decideSoldierVsSoldierClash(player1, player2) {
+  if (player1.soldiers == player2.soldiers) {
     return null;
   } else {
-    return player1.attackers > player2.attackers ? player1 : player2;
+    return player1.soldiers > player2.soldiers ? player1 : player2;
   }
+}
+
+function decideAggressorVsDefenderClash(aggressor, defender) {
+  let aggressorPower = aggressor.soldiers,
+      defenderPower = defender.soldiers + DEFENDER_ADVANTAGE_BONUS;
+  return aggressorPower > defenderPower ? aggressor : defender;
 }
 
 function getOtherPlayer(player, player1, player2) {
@@ -116,19 +132,20 @@ function getOtherPlayer(player, player1, player2) {
 
 class PlayerState {
   constructor() {
-    this.attackers = 1;
-    this.workers = 1;
-    this.choices = [];
+    this.producers = 1;
+    this.soldiers = 0;
+    this.actions = [];
   }
 
   isAttacking() {
-    return this.choices.slice(-1) == PlayerActions.ATTACK;
+    let lastActions = this.actions.slice(-1)[0];
+    return lastActions && lastActions.launchAttack == true;
   }
 
   toSimpleState() {
     return {
-      attackers: this.attackers,
-      workers: this.workers
+      producers: this.producers,
+      soldiers: this.soldiers
     }
   }
 }
