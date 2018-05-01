@@ -24,7 +24,7 @@ class Match {
   }
 
   start() {
-    this.game.onMatchStart(this.rules);
+    this.game.onMatchStart();
     this.player1.onMatchStart(this.rules);
     this.player2.onMatchStart(this.rules);
 
@@ -134,7 +134,7 @@ class Round {
     this.turnsRemaining = this.turns;
 
     let endRoundCallback = (roundResult) => this.end(roundResult);
-    this.game.onRoundStart(this.rules, endRoundCallback);
+    this.game.onRoundStart(endRoundCallback);
 
     this.player1.onRoundStart(this.rules);
     this.player2.onRoundStart(this.rules);
@@ -176,8 +176,12 @@ class Round {
 
     this.status = RoundStatus.FINISHED;
 
-    this.player1.onRoundEnd(roundResult);
-    this.player2.onRoundEnd(roundResult);
+    let player1RoundResult = this.game.getPlayer1RoundResult() || this.result,
+        player2RoundResult = this.game.getPlayer2RoundResult() || this.result;
+
+    this.player1.onRoundEnd(player1RoundResult);
+    this.player2.onRoundEnd(player2RoundResult);
+    this.game.onRoundEnd();
 
     return this;
   }
@@ -226,6 +230,9 @@ class GameDriver {
   getPlayer2TurnState() { return callIfExists(this.game, 'getPlayer2TurnState', arguments); }
   playTurn() { return callIfExists(this.game, 'playTurn', arguments); }
   onNoRemainingTurnsInRound() { return callIfExists(this.game, 'onNoRemainingTurnsInRound', arguments); }
+  getPlayer1RoundResult() { return callIfExists(this.game, 'getPlayer1RoundResult', arguments); }
+  getPlayer2RoundResult() { return callIfExists(this.game, 'getPlayer2RoundResult', arguments); }
+  onRoundEnd() { return callIfExists(this.game, 'onRoundEnd', arguments); }
 }
 
 class PlayerDriver {

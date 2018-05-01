@@ -14,7 +14,7 @@ describe('GameOfDrones integration tests: ', () => {
     }
   };
 
-  let timingAttackBot = (function() {
+  let timingAttackBot = (() => {
     let turnsToWaitBeforeAttacking;
     return {
       onRoundStart() {

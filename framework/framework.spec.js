@@ -101,7 +101,7 @@ describe('Round', () => {
       expect(game.playTurn).toHaveBeenCalledWith(1, 2);
     });
 
-    it('should solicit actions from players as Promises and provide the resolved values to the game', () => {
+    xit('should solicit actions from players as Promises and provide the resolved values to the game', () => {
       /* Ignored for now, but should handle this later! May require some API changes...
       let player1 = { playTurn() { return Promise.resolve(1) }},
           player2 = { playTurn() { return Promise.resolve(2) }},
@@ -158,6 +158,24 @@ describe('Round', () => {
       expect(player1.onRoundEnd).toHaveBeenCalled();
       expect(player2.onRoundEnd).toHaveBeenCalled();
     });
+
+    it('should notify the players of the results of the round when it ends', () => {
+      let player1 = jasmine.createSpyObj('player1', ['onRoundEnd']),
+          player2 = jasmine.createSpyObj('player2', ['onRoundEnd']),
+          player1Result = { outcome: 'WIN' },
+          player2Result = { outcome: 'LOSE' },
+          game = {
+            getPlayer1RoundResult() { return player1Result },
+            getPlayer2RoundResult() { return player2Result }
+          };
+
+      new Round({ game, player1, player2 })
+        .start()
+        .end();
+
+      expect(player1.onRoundEnd).toHaveBeenCalledWith(player1Result);
+      expect(player2.onRoundEnd).toHaveBeenCalledWith(player2Result);
+    });
   });
 
   describe('play', () => {
@@ -170,8 +188,9 @@ describe('Round', () => {
 
       round.play();
 
-      expect(roundStart).toHaveBeenCalled(); // TODO: Upgrade Jasmine to use toHaveBeenCalledBefore(roundExecuteTurn)
-      expect(roundExecuteTurn).toHaveBeenCalledTimes(turns); // TODO: Upgrade Jasmine to use toHaveBeenCalledBefore(roundEnd)
+      expect(roundStart).toHaveBeenCalledBefore(roundExecuteTurn);
+      expect(roundExecuteTurn).toHaveBeenCalledBefore(roundEnd);
+      expect(roundExecuteTurn).toHaveBeenCalledTimes(turns);
       expect(roundEnd).toHaveBeenCalled();
     });
   });
@@ -202,7 +221,7 @@ describe('Match', () => {
       expect(player2.onMatchStart).toHaveBeenCalled();
     });
 
-    it('should combine basic and game-specific Match rules to inform players', () => {
+    it('should notify players of Match Rules', () => {
       let game = { getMatchRules() { return { fancyRule: 'win' } } },
         player1 = jasmine.createSpyObj('player1', ['onMatchStart']),
         player2 = jasmine.createSpyObj('player2', ['onMatchStart']),
@@ -230,7 +249,7 @@ describe('Match', () => {
       expect(match.roundResults.length).toBe(1);
     });
 
-    it('should produce an ERROR round result if the game throws an error during play of the round', () => {
+    xit('should produce an ERROR round result if the game throws an error during play of the round', () => {
       // TODO
     });
   });
@@ -246,6 +265,9 @@ describe('Match', () => {
         'getPlayer2TurnState',
         'playTurn',
         'onNoRemainingTurnsInRound',
+        'getPlayer1RoundResult',
+        'getPlayer2RoundResult',
+        'onRoundEnd',
         'onMatchEnd'
       ]);
       let rounds = 3;
@@ -263,6 +285,8 @@ describe('Match', () => {
       expect(game.playTurn).toHaveBeenCalledTimes(rounds * 2);
 
       expect(game.onNoRemainingTurnsInRound).toHaveBeenCalledTimes(rounds);
+      expect(game.getPlayer1RoundResult).toHaveBeenCalledTimes(rounds);
+      expect(game.getPlayer2RoundResult).toHaveBeenCalledTimes(rounds);
     });
   });
 

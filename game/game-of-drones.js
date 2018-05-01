@@ -3,19 +3,27 @@ import { PlayOutcome, RoundResult } from '../framework/framework.js';
 const DEFENDER_ADVANTAGE_BONUS = 1;
 
 class GameOfDrones {
+  constructor(config) {
+    let defaultRules = { rounds: 10, turns: 10 };
+    let configuredRules = Object.assign({}, defaultRules, config);
+    this.matchRules = { rounds: configuredRules.rounds };
+    this.roundRules = { turns: configuredRules.turns };
+  }
 
   /* +++++++++++++++ */
   /* Lifecycle Hooks */
 
-  getMatchRules() { /* No special rules to report for this game at the Match level */ }
+  getMatchRules(signalEndOfMatch) {
+    return this.matchRules;
+  }
 
   onMatchStart() { /* Nothing special on Match start */ }
 
   getRoundRules() {
-    return { turns: 10 };
+    return this.roundRules;
   }
 
-  onRoundStart(roundRules, signalEndOfRound) {
+  onRoundStart(signalEndOfRound) {
     this.initializeRound(signalEndOfRound);
   }
 
@@ -35,17 +43,31 @@ class GameOfDrones {
     this.triggerClash();
   }
 
+  getPlayer1RoundResult() {
+    return this.buildPlayerRoundResult(this.player1);
+  }
+
+  getPlayer2RoundResult() {
+    return this.buildPlayerRoundResult(this.player2);
+  }
+
+  onRoundEnd() { /* Nothing special on Round end */ }
+
   /* END Lifecycle Hooks */
   /* +++++++++++++++++++ */
 
   initializeRound(signalEndOfRound) {
+    this.signalEndOfRound = signalEndOfRound;
+
     this.player1 = new PlayerState();
     this.player2 = new PlayerState();
-    this.signalEndOfRound = signalEndOfRound;
+    this.turnsPlayed = 0;
     this.roundResult = null; 
   }
 
   handleTurn(player1Actions, player2Actions) {
+    this.turnsPlayed++;
+
     this.handlePlayerActions(this.player1, player1Actions);
     this.handlePlayerActions(this.player2, player2Actions);
 
@@ -56,8 +78,11 @@ class GameOfDrones {
 
   handlePlayerActions(player, actions) {
     let productionCapacity = player.producers,
-        newProducers = actions.newProducers || 0,
-        newSoldiers = actions.newSoldiers || 0;
+        newProducers = actions && actions.newProducers || 0,
+        newSoldiers = actions && actions.newSoldiers || 0;
+
+    newProducers = newProducers > 0 ? newProducers : 0;
+    newSoldiers = newSoldiers > 0 ? newSoldiers : 0;
 
     if (newProducers < productionCapacity) {
       productionCapacity -= newProducers;
@@ -84,11 +109,8 @@ class GameOfDrones {
 
   triggerClash() {
     let winner = this.evaluateClash();
-    let result = winner === this.player1 ? PlayOutcome.PLAYER_1
-               : winner === this.player2 ? PlayOutcome.PLAYER_2
-               : PlayOutcome.DRAW;
 
-    this.roundResult = new GameRoundResult(this.player1, this.player2, result);
+    this.roundResult = this.buildRoundResult(winner);
 
     this.signalEndOfRound(this.roundResult);
   }
@@ -102,6 +124,29 @@ class GameOfDrones {
       return decideAggressorVsDefenderClash(aggressor, defender);
     }
   }
+
+  buildRoundResult(winner) {
+    let outcome = winner === this.player1 ? PlayOutcome.PLAYER_1
+               : winner === this.player2 ? PlayOutcome.PLAYER_2
+               : PlayOutcome.DRAW;
+
+    return new GameRoundResult(this.player1, this.player2, outcome, this.turnsPlayed);
+  }
+
+  buildPlayerRoundResult(player) {
+    let winner = this.roundResult.outcome == PlayOutcome.PLAYER_1 ? this.player1
+               : this.roundResult.outcome == PlayOutcome.PLAYER_2 ? this.player2
+               : null;
+
+    let otherPlayer = getOtherPlayer(player, this.player1, this.player2);
+
+    let playerOutcome = winner == null ? PlayerOutcome.DRAW
+                      : winner == player ? PlayerOutcome.WIN
+                      : PlayerOutcome.LOSE;
+
+    return new PlayerRoundResult(player, otherPlayer, playerOutcome, this.turnsPlayed);
+  }
+
 }
 
 function determineAggressor(player1, player2) {
@@ -148,25 +193,38 @@ class PlayerState {
       soldiers: this.soldiers
     }
   }
-}
 
-class GameRoundResult extends RoundResult {
-  constructor(player1, player2, outcome) {
-    super(outcome);
-    let { player1Attackers, player1Workers } = player1;
-    let { player2Attackers, player2Workers } = player2;
-    this.player1 = player1.toSimpleState();
-    this.player2 = player2.toSimpleState();
-    this.outcome = outcome;
+  toRoundEndState() {
+    return {
+      producers: this.producers,
+      soldiers: this.soldiers,
+      launchedAttack: this.isAttacking()
+    };
   }
 }
 
-const PlayerActions = {
-  TRAIN_ATTACKER: 'TRAIN_ATTACKER',
-  BUILD_WORKER: 'BUILD_WORKER',
-  ATTACK: 'ATTACK'
-};
+class GameRoundResult extends RoundResult {
+  constructor(player1, player2, outcome, turnsPlayed) {
+    super(outcome);
+    this.turnsPlayed = turnsPlayed;
+    this.player1 = player1.toRoundEndState();
+    this.player2 = player2.toRoundEndState();
+  }
+}
 
-const INVALID_ACTION = 'INVALID_ACTION';
+const PlayerOutcome = {
+  WIN: 'WIN',
+  LOSE: 'LOSE',
+  DRAW: 'DRAW'
+}
 
-export { GameOfDrones, determineAggressor, PlayerActions };
+class PlayerRoundResult extends RoundResult {
+  constructor(player, otherPlayer, playerOutcome, turnsPlayed) {
+    super(playerOutcome);
+    this.turnsPlayed = turnsPlayed;
+    this.you = player.toRoundEndState();
+    this.them = otherPlayer.toRoundEndState();
+  }
+}
+
+export { GameOfDrones, determineAggressor };

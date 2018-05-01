@@ -20,7 +20,7 @@ describe('BracketMatch', () => {
 
   it('should resolve to Player One if that player wins the Match', () => {
     let gameWherePlayer1AlwaysWins = {
-      onRoundStart(rules, endRound) { endRound(new RoundResult(PlayOutcome.PLAYER_1)); }
+      onRoundStart(endRound) { endRound(new RoundResult(PlayOutcome.PLAYER_1)); }
     };
     let player1 = { name: 'one' },
         player2 = { name: 'two' };
@@ -31,7 +31,7 @@ describe('BracketMatch', () => {
 
   it('should resolve to Player Two if that player wins the Match', () => {
     let gameWherePlayer2AlwaysWins = {
-      onRoundStart(rules, endRound) { endRound(new RoundResult(PlayOutcome.PLAYER_2)); }
+      onRoundStart(endRound) { endRound(new RoundResult(PlayOutcome.PLAYER_2)); }
     };
     let player1 = { name: 'one' },
         player2 = { name: 'two' };
