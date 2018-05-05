@@ -1,19 +1,45 @@
 Code Challenge 2018
 ===================
 
-
 Thank you for your interest in Bravo LT's Google I/O Extended Event Code Challenge 2018 (that's a mouthful!)!  This year, instead of solving the Travelling Salesman Problem or getting artistic with your favorite esoteric language, participants will be expected to produce an **AI "bot"** for a simple game!
 
 The game is designed to be simple enough to understand in 5 minutes, but interesting enough that it is entertaining to play and/or watch.
 
 The software is designed to be simple enough where a viable AI bot could be produced in a few minutes, but complex enough to provide a platform for your ingenuity (and overwhelming strategic prowess) to shine through in your AI creation!
 
+As with previous years, there are prizes available for the best entries! To determine which bots will earn those prizes, all the submitted AIs will be going head-to-head against each other in a tournament format. May the best bot win!
+
 The rest of this README consists of an explanation of the game. Please stay tuned for details about how to go about building your AI and how to submit your AI so that it can go head-to-head with AIs written by other participants (including some Bravo LT engineers)!
 
+# How to Participate
+
+## Building Your Bot
+
+Participation in the Code Challenge consists of writing a Javascript `function` or `class` which implements the necessary interface for a game bot. The interface is quite simple, having only a single required function: `playTurn`, which the game calls to solicit actions from each bot once per turn. This function takes a single `playerState` parameter and is expected to return a simple object representing the actions your bot wishes to perform for that turn. You can find more details in the `bot.template.js` file, or by reviewing the example bots in the `example-bots` directory.
+
+A simple (albeit unsophisticated) bot is producible in a matter of minutes.
+
+## Submitting Your Bot
+
+After your bot has been created, it should be submitted it to us prior to the Code Challenge Event. There are several available avenues to submit your creation. You could:
+
+* Fork this repository and create a Pull Request (if you are comfortable with your code being publicly visible)
+
+* Add your code to a source repository under your control and send us a link where we can access it
+
+* Add your code to Google Drive, Dropbox, or the like and send us a link where we can access it
+
+* Package up your code in a `.zip` or `.tgz` file and email it to us
+
+Please email submission links or questions to david.schoutens@bravolt.com
+
+## Come Watch the Code Challenge Contest Unfold!
+
+During the Google I/O Extended GR event, we will be organizing a tournament-style showdown to determine the best submissions. There are two time slots we will be dedicating to the Code Challenge this year: **3:00 pm on Tuesday, May 8** and **11:30 am on Wednesday, May 9**.  If the level of interest and number of submissions is high enough, we plan to run a separate tournament on both days during those time slots. Spectators are welcome, and prizes will be awarded for the winning bots!
 
 # GameOfDrones Game
 
-GameOfDrones is a simple, concurrent-turn-based strategy game where players try to amass enough fighting units to overwhelm their enemy in a single decisive battle.
+GameOfDrones is a simple, concurrent-turn-based strategy game where players try to amass enough fighting units to overwhelm their enemy in a single decisive battle
 
 
 ## Rules
@@ -71,7 +97,6 @@ In this scenario, neither side has an advantage over the other. The victor of th
   2. If both players have equally high attack power, then the player with the **larger number of total units** (including **Producers**) wins.
 
   3. Finally, if both players have the same attack power and total number of units, the clash is decided by **random chance**.
-
 
 ### Gameplay
 
