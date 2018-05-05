@@ -37,10 +37,9 @@ Please email submission links or questions to david.schoutens@bravolt.com
 
 During the Google I/O Extended GR event, we will be organizing a tournament-style showdown to determine the best submissions. There are two time slots we will be dedicating to the Code Challenge this year: **3:00 pm on Tuesday, May 8** and **11:30 am on Wednesday, May 9**.  If the level of interest and number of submissions is high enough, we plan to run a separate tournament on both days during those time slots. Spectators are welcome, and prizes will be awarded for the winning bots!
 
-# GameOfDrones Game
+# Game Description: GameOfDrones
 
 GameOfDrones is a simple, concurrent-turn-based strategy game where players try to amass enough fighting units to overwhelm their enemy in a single decisive battle
-
 
 ## Rules
 
@@ -56,7 +55,6 @@ Play within a round continues until a **clash** occurs, which decides the outcom
 
 A single **match** consists of multiple rounds. The player which wins a majority of rounds in a match is the winner.
 
-
 ### Units
 
 The following distinct unit types can be under player control:
@@ -64,7 +62,6 @@ The following distinct unit types can be under player control:
 * **Producers**: Units which grant the player the ability to create an additional unit each turn.
 
 * **Soldiers**: Units which contribute to a player's **attack power**.
-
 
 ### Clashes
 
