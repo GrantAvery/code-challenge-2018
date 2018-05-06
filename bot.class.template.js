@@ -1,9 +1,14 @@
-class ClassyExample {
+class ExamplePlayer {
 
   /**
    * Constructor. Will always be called by the framework with no arguments!
    */
-  constructor() { };
+  constructor() {
+    this.meta = {
+      name: 'Name of Your Bot',
+      author: 'Your Name'
+    };
+  }
 
   /**
    * OPTIONAL method / lifecycle hook.
@@ -77,7 +82,7 @@ class ClassyExample {
 }
 
 function getPlayer() {
-  return new ClassyExample();
+  return new ExamplePlayer();
 }
 
 export default getPlayer;

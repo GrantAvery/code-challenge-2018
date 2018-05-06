@@ -1,4 +1,4 @@
-function examplePlayer() {
+function createExamplePlayer() {
 
   /**
    * OPTIONAL method / lifecycle hook.
@@ -79,6 +79,10 @@ function examplePlayer() {
   function onRoundEnd(roundResult) { }
 
   return {
+    meta: {
+      name: 'Name of Your Bot',
+      author: 'Your Name'
+    },
     onMatchStart, // Optional
     onRoundStart, // Optional
     playTurn,
@@ -86,4 +90,4 @@ function examplePlayer() {
   };
 }
 
-export default examplePlayer;
+export default createExamplePlayer;
