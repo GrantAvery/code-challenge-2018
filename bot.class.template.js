@@ -1,7 +1,7 @@
 class ExamplePlayer {
 
   /**
-   * Constructor. Will always be called by the framework with no arguments!
+   * Constructor. Setup your metadata here
    */
   constructor() {
     this.meta = {

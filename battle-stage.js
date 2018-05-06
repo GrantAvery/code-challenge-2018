@@ -10,4 +10,4 @@ let match = new Match({
   player2: Closurey()
 });
 
-console.log(match.play());
+console.log(JSON.stringify(match.play(), null, 2));

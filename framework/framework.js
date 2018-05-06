@@ -41,7 +41,7 @@ class Match {
   }
 
   getResult() {
-    return new MatchResult(this.roundResults);
+    return new MatchResult(this.player1.meta, this.player2.meta, this.roundResults);
   }
 
   play() {
@@ -56,7 +56,9 @@ class Match {
 }
 
 class MatchResult {
-  constructor(roundResults) {
+  constructor(player1, player2, roundResults) {
+    this.player1 = player1;
+    this.player2 = player2;
     this.roundResults = roundResults;
     this.compute();
   }
@@ -236,7 +238,13 @@ class GameDriver {
 }
 
 class PlayerDriver {
-  constructor(player) { this.meta = 'PlayerDriver'; this.player = player; }
+  constructor(player) {
+    this.player = player;
+
+    this.meta = typeof player.meta == 'object'
+      ? player.meta
+      : { name: 'Anonymous Player'};
+  }
   onMatchStart() { callIfExists(this.player, 'onMatchStart', arguments); }
   onRoundStart() { callIfExists(this.player, 'onRoundStart', arguments); }
   playTurn() { return callIfExists(this.player, 'playTurn', arguments); }

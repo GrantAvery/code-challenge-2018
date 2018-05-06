@@ -78,6 +78,8 @@ function createExamplePlayer() {
    */
   function onRoundEnd(roundResult) { }
 
+
+  // Finally, return your Player object here. Don't forget to set metadata :-)
   return {
     meta: {
       name: 'Name of Your Bot',
