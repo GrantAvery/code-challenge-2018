@@ -9,6 +9,13 @@
  */
 class ZergRusher {
 
+  constructor() {
+    this.meta = {
+      name: 'Zergy McZergface (Example Bot)',
+      author: 'Bravo LT'
+    };
+  }
+
   onRoundStart(roundRules) {
     this.roundRules = roundRules;
   };

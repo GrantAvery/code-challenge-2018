@@ -1,13 +1,18 @@
 /**
- * The strategy employed by this bot is to create as many producers as possible 
- * until the last moment, and then create as many soldiers as possible. In other
- * words, it is the optimal build for the scenario where an "in the field" clash
- * is forced by the game after the last turn in the round.
+ * The strategy employed by this bot is to focus solely on growing the number of
+ * producers until the last turn, and then creating as many soldiers as possible.
  * 
  * This strategy will beat anyone who never launches an attack, and who
  * produces soldiers less efficiently prior to the last turn in the round.
  */
 class HardHittingPacifist {
+
+  constructor() {
+    meta = {
+      name: 'Hard Hitting Pacifist (Example Bot)',
+      author: 'Bravo LT'
+    };
+  }
 
   onRoundStart(roundRules) {
     this.turnsInThisRound = roundRules.turns;

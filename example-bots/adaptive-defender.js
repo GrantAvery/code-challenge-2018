@@ -35,6 +35,10 @@ function createAdaptiveDefender() {
 
   /* Return our Player object */
   return {
+    meta: {
+      name: 'Adaptive Defender (Example Bot)',
+      author: 'Bravo LT'
+    },
     onRoundStart,
     playTurn,
     onRoundEnd
