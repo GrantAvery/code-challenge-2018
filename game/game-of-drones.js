@@ -6,8 +6,15 @@ class GameOfDrones {
   constructor(config) {
     let defaultRules = { rounds: 10, turns: 10 };
     let configuredRules = Object.assign({}, defaultRules, config);
+
     this.matchRules = { rounds: configuredRules.rounds };
-    this.roundRules = { turns: configuredRules.turns };
+    
+    this.defenderBonus = configuredRules.defenderBonus || 1;
+    this.turnCountGenerator = (typeof configuredRules.turns == 'function')
+      ? configuredRules.turns
+      : () => configuredRules.turns;
+
+    this.roundNumber = 1;
   }
 
   /* +++++++++++++++ */
@@ -20,11 +27,15 @@ class GameOfDrones {
   onMatchStart() { /* Nothing special on Match start */ }
 
   getRoundRules() {
-    return this.roundRules;
+    return {
+      turns: this.turnCountGenerator(this.roundNumber),
+      defenderBonus: this.defenderBonus
+    };
   }
 
   onRoundStart(signalEndOfRound) {
     this.initializeRound(signalEndOfRound);
+    this.roundNumber++;
   }
 
   getPlayer1TurnState() {
