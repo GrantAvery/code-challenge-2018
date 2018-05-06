@@ -4,6 +4,7 @@
   "description": "Bravo LT Code Challenge 2018",
   "main": "index.js",
   "scripts": {
+    "battle": "node battle.js",
     "test": "testem"
   },
   "repository": {
@@ -20,6 +21,8 @@
     "jasmine": "^3.1.0"
   },
   "dependencies": {
+    "babel-preset-node6": "^11.0.0",
+    "babel-register": "^6.26.0",
     "npm": "^6.0.0"
   }
 }

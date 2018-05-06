@@ -1,4 +1,4 @@
-class Player {
+class ClassyExample {
 
   /**
    * Constructor. Will always be called by the framework with no arguments!
@@ -19,7 +19,10 @@ class Player {
    * Called by the framework to notify Player of the start of a Round, providing the rules for the Round
    *
    * Parameters:
-   *   roundRules - { turns: <maxNumberOfTurnsInRound> }
+   *   roundRules - {
+   *     turns: <maxNumberOfTurnsInRound>,
+   *     defenderBonus: <amountOfBonusAttackPowerWhenDefending>
+   *   }
    */
   onRoundStart(roundRules) { };
 
@@ -29,7 +32,10 @@ class Player {
    * This is the only mechanism by which the Player is able to communicate with the Game.
    *
    * Parameters:
-   *   playerState - { producers: <currentProducerCount>, soldiers: <currentSoldierCount> }
+   *   playerState - {
+   *     producers: <currentProducerCount>,
+   *     soldiers: <currentSoldierCount>
+   *   }
    *
    * Expected Return Value: PlayerActions
    *   {
@@ -70,4 +76,8 @@ class Player {
 
 }
 
-export { Player };
+function getPlayer() {
+  return new ClassyExample();
+}
+
+export default getPlayer;
