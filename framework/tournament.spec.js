@@ -1,4 +1,5 @@
-import { RoundResult, PlayOutcome } from '../framework/framework.js';
+import { PlayOutcome } from './consts.js';
+import { RoundResult } from '../framework/round.js';
 import { Tournament, Bracket, BracketMatch } from './tournament.js';
 
 describe('BracketMatch', () => {

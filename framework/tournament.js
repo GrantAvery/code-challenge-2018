@@ -1,4 +1,5 @@
-import { Match, PlayOutcome } from './framework.js';
+import { PlayOutcome } from './consts.js';
+import { Match } from './match.js';
 
 class Tournament {
   constructor(game) {

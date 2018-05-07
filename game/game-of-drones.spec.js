@@ -1,5 +1,5 @@
+import { PlayOutcome } from '../framework/index.js';
 import { GameOfDrones, determineAggressor } from './game-of-drones.js';
-import { PlayOutcome } from '../framework/framework.js';
 
 let CREATE_PRODUCER = { newProducers: 1 },
     CREATE_SOLDIER = { newSoldiers: 1 },

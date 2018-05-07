@@ -1,4 +1,4 @@
-import { Match, PlayOutcome } from '../framework/framework.js';
+import { Match, PlayOutcome } from '../framework/index.js';
 import { GameOfDrones } from './game-of-drones.js';
 
 describe('GameOfDrones integration tests: ', () => {
