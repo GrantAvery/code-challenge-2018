@@ -1,4 +1,4 @@
-import { Match } from './framework/framework.js';
+import { Match } from './framework/index.js';
 import { GameOfDrones } from './game/game-of-drones.js';
 
 import AdaptiveDefender from './example-bots/adaptive-defender.js';
