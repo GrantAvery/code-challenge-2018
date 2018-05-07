@@ -30,7 +30,7 @@ function createAdaptiveDefender() {
   }
 
   function onRoundEnd(roundResult) {
-    lastObservedAttack = roundResult.them.attackLaunched ? roundResult.turnsPlayed : null;
+    lastObservedAttack = roundResult.them.launchedAttack ? roundResult.turnsPlayed : null;
   }
 
   /* Return our Player object */

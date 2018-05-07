@@ -230,8 +230,8 @@ describe('Match', () => {
       new Match({ game, player1, player2, rounds: 1 }).start();
 
       expect(gameGetMatchRules).toHaveBeenCalled();
-      expect(player1.onMatchStart).toHaveBeenCalledWith({ rounds: 1, fancyRule: 'win' });
-      expect(player2.onMatchStart).toHaveBeenCalledWith({ rounds: 1, fancyRule: 'win' });
+      expect(player1.onMatchStart).toHaveBeenCalledWith({ rounds: 1, drawAllowed: true, fancyRule: 'win' });
+      expect(player2.onMatchStart).toHaveBeenCalledWith({ rounds: 1, drawAllowed: true, fancyRule: 'win' });
     });
   });
 
@@ -287,6 +287,22 @@ describe('Match', () => {
       expect(game.onNoRemainingTurnsInRound).toHaveBeenCalledTimes(rounds);
       expect(game.getPlayer1RoundResult).toHaveBeenCalledTimes(rounds);
       expect(game.getPlayer2RoundResult).toHaveBeenCalledTimes(rounds);
+    });
+  });
+
+  describe('draw game policy', () => {
+    it('should default to allowing draws', () => {
+      expect(new Match().rules.drawAllowed).toBe(true);
+    });
+
+    it('should be configurable to disallow draws', () => {
+      expect(new Match({ drawAllowed: false }).rules.drawAllowed).toBe(false);
+    });
+
+    it('should decide a winner by random chance if draws are disallowed', () => {
+      let result = new Match({ drawAllowed: false }).play();
+      expect(result.outcome).not.toBe('DRAW');
+      expect(result.outcomeDecidedByRandomChance).toBe(true);
     });
   });
 

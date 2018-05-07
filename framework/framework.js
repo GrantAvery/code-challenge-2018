@@ -5,6 +5,7 @@ class Match {
       player1: {},
       player2: {},
       rounds: 7,
+      drawAllowed: true
     };
     let init = Object.assign({}, defaults, config);
 
@@ -14,6 +15,7 @@ class Match {
 
     this.rules = Object.assign({}, this.game.getMatchRules());
     this.rules.rounds = this.rules.rounds || init.rounds;
+    this.rules.drawAllowed = init.drawAllowed;
 
     this.rounds = this.rules.rounds;
     if (this.rounds < 1) {
@@ -41,7 +43,7 @@ class Match {
   }
 
   getResult() {
-    return new MatchResult(this.player1.meta, this.player2.meta, this.roundResults);
+    return new MatchResult(this.player1.meta, this.player2.meta, this.roundResults, this.rules.drawAllowed);
   }
 
   play() {
@@ -56,11 +58,21 @@ class Match {
 }
 
 class MatchResult {
-  constructor(player1, player2, roundResults) {
+  constructor(player1, player2, roundResults, drawAllowed=true) {
+    this.roundResults = roundResults;
+
+    this.outcomeDecidedByRandomChance = false;
+    this.compute();
+
+    if (this.outcome == 'DRAW' && !drawAllowed) {
+      this.outcome = Math.round(Math.random()) + 1 == 1
+        ? PlayOutcome.PLAYER_1
+        : PlayOutcome.PLAYER_2;
+      this.outcomeDecidedByRandomChance = true;
+    }
+
     this.player1 = player1;
     this.player2 = player2;
-    this.roundResults = roundResults;
-    this.compute();
   }
 
   compute() {

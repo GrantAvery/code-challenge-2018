@@ -39,15 +39,6 @@ describe('BracketMatch', () => {
 
     expect(bracketMatch.resolve()).toBe(player2);
   });
-
-  it('should throw an error if neither player wins the Match', () => {
-    let game = {},
-      player1 = { name: 'one' },
-      player2 = { name: 'two' },
-      bracketMatch = new BracketMatch(game, player1, player2);
-
-    expect(() => bracketMatch.resolve()).toThrowError();
-  });
 });
 
 describe('Bracket', () => {

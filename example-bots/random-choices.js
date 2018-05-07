@@ -37,7 +37,7 @@ function getRandomInt(min, max) {
 }
 
 function getPlayer() {
-  return new ExamplePlayer();
+  return new RandomPlayer();
 }
 
 export default getPlayer;

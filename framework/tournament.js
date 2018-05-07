@@ -62,7 +62,8 @@ class BracketMatch {
       this.matchResult = new Match({
         game: this.game,
         player1: this.player1,
-        player2: this.player2
+        player2: this.player2,
+        drawAllowed: false
       }).play();
     }
 

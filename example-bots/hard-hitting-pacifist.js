@@ -8,7 +8,7 @@
 class HardHittingPacifist {
 
   constructor() {
-    meta = {
+    this.meta = {
       name: 'Hard Hitting Pacifist (Example Bot)',
       author: 'Bravo LT'
     };
