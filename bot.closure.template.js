@@ -1,9 +1,4 @@
-class Player {
-
-  /**
-   * Constructor. Will always be called by the framework with no arguments!
-   */
-  constructor() { };
+function createExamplePlayer() {
 
   /**
    * OPTIONAL method / lifecycle hook.
@@ -12,16 +7,28 @@ class Player {
    * Parameters:
    *   matchRules - { rounds: <numberOfRoundsInMatch> }
    */
-  onMatchStart(matchRules) { };
+  function onMatchStart(matchRules) {}
+
+  /**
+   * OPTIONAL method / lifecycle hook.
+   * Called by the framework to notify Player the start of the Match, providing the rules for the Match
+   *
+   * Parameters:
+   *   matchRules - { rounds: <numberOfRoundsInMatch> }
+   */
+  function onMatchStart(matchRules) {}
 
   /**
    * OPTIONAL method / lifecycle hook.
    * Called by the framework to notify Player of the start of a Round, providing the rules for the Round
    *
    * Parameters:
-   *   roundRules - { turns: <maxNumberOfTurnsInRound> }
+   *   roundRules - {
+   *     turns: <maxNumberOfTurnsInRound>,
+   *     defenderBonus: <amountOfBonusAttackPowerWhenDefending>
+   *   }
    */
-  onRoundStart(roundRules) { };
+  function onRoundStart(roundRules) {}
 
   /**
    * REQUIRED method!
@@ -29,7 +36,10 @@ class Player {
    * This is the only mechanism by which the Player is able to communicate with the Game.
    *
    * Parameters:
-   *   playerState - { producers: <currentProducerCount>, soldiers: <currentSoldierCount> }
+   *   playerState - {
+   *     producers: <currentProducerCount>,
+   *     soldiers: <currentSoldierCount>
+   *   }
    *
    * Expected Return Value: PlayerActions
    *   {
@@ -38,7 +48,7 @@ class Player {
    *     launchAttack: <true | false -- set to true to launch attack with your soldiers at end of turn>
    *   }
    */
-  playTurn(playerState) {
+  function playTurn(playerState) {
     return {
       newProducers: 0,
       newSoldiers: 0,
@@ -66,8 +76,20 @@ class Player {
    *     }
    *   }
    */
-  onRoundEnd(roundResult) { };
+  function onRoundEnd(roundResult) { }
 
+
+  // Finally, return your Player object here. Don't forget to set metadata :-)
+  return {
+    meta: {
+      name: 'Name of Your Bot',
+      author: 'Your Name'
+    },
+    onMatchStart, // Optional
+    onRoundStart, // Optional
+    playTurn,
+    onRoundEnd // Optional
+  };
 }
 
-export { Player };
+export default createExamplePlayer;

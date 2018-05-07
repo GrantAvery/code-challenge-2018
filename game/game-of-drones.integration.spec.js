@@ -1,4 +1,4 @@
-import { Match, PlayOutcome } from '../framework/framework.js';
+import { Match, PlayOutcome } from '../framework/index.js';
 import { GameOfDrones } from './game-of-drones.js';
 
 describe('GameOfDrones integration tests: ', () => {
@@ -51,7 +51,7 @@ describe('GameOfDrones integration tests: ', () => {
 
       let result = match.play();
 
-      expect(match.play().outcome).toBe(PlayOutcome.PLAYER_2);
+      expect(result.outcome).toBe(PlayOutcome.PLAYER_2);
     });
 
     it('should of course draw against itself', () => {
@@ -63,7 +63,7 @@ describe('GameOfDrones integration tests: ', () => {
 
       let result = match.play();
 
-      expect(match.play().outcome).toBe(PlayOutcome.DRAW);
+      expect(result.outcome).toBe(PlayOutcome.DRAW);
     });
   });
 
@@ -77,7 +77,7 @@ describe('GameOfDrones integration tests: ', () => {
 
       let result = match.play();
 
-      expect(match.play().outcome).toBe(PlayOutcome.PLAYER_2);
+      expect(result.outcome).toBe(PlayOutcome.PLAYER_2);
     });
   });
 });

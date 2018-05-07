@@ -1,4 +1,5 @@
-import { Match, PlayOutcome } from './framework.js';
+import { PlayOutcome } from './consts.js';
+import { Match } from './match.js';
 
 class Tournament {
   constructor(game) {
@@ -62,7 +63,8 @@ class BracketMatch {
       this.matchResult = new Match({
         game: this.game,
         player1: this.player1,
-        player2: this.player2
+        player2: this.player2,
+        drawAllowed: false
       }).play();
     }
 

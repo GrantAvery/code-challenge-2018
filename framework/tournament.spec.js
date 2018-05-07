@@ -1,4 +1,5 @@
-import { RoundResult, PlayOutcome } from '../framework/framework.js';
+import { PlayOutcome } from './consts.js';
+import { RoundResult } from '../framework/round.js';
 import { Tournament, Bracket, BracketMatch } from './tournament.js';
 
 describe('BracketMatch', () => {
@@ -38,15 +39,6 @@ describe('BracketMatch', () => {
     let bracketMatch = new BracketMatch(gameWherePlayer2AlwaysWins, player1, player2);
 
     expect(bracketMatch.resolve()).toBe(player2);
-  });
-
-  it('should throw an error if neither player wins the Match', () => {
-    let game = {},
-      player1 = { name: 'one' },
-      player2 = { name: 'two' },
-      bracketMatch = new BracketMatch(game, player1, player2);
-
-    expect(() => bracketMatch.resolve()).toThrowError();
   });
 });
 

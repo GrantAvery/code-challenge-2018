@@ -1,14 +1,47 @@
+import { PlayOutcome } from '../framework/index.js';
 import { GameOfDrones, determineAggressor } from './game-of-drones.js';
-import { PlayOutcome } from '../framework/framework.js';
 
 let CREATE_PRODUCER = { newProducers: 1 },
     CREATE_SOLDIER = { newSoldiers: 1 },
     ATTACK = { launchAttack: true };
 
-describe('Game of Drones', () => {
+describe('Game of Drones:', () => {
   it('should be instantiable', () => {
     let game = new GameOfDrones();
     expect(game).toBeDefined();
+  });
+
+  describe('getRoundRules', () => {
+    describe('turns per round', () => {
+      it('should default to 10', () => {
+        expect(new GameOfDrones().getRoundRules().turns).toBe(10);
+      });
+
+      it('should be configurable at Game construction', () => {
+        expect(new GameOfDrones({ turns: 5 }).getRoundRules().turns).toBe(5);
+      });
+
+      it('should be configurable by a generator function', () => {
+        let game = new GameOfDrones({
+          turns: (roundNumber) => roundNumber
+        });
+        expect(game.getRoundRules().turns).toBe(1);
+        game.onRoundStart();
+        expect(game.getRoundRules().turns).toBe(2);
+        game.onRoundStart();
+        expect(game.getRoundRules().turns).toBe(3);
+      });
+    });
+
+    describe("defender's advantage", () => {
+      it('should default to 1', () => {
+        expect(new GameOfDrones().getRoundRules().defenderBonus).toBe(1);
+      });
+
+      it('should be configurable at Game construction', () => {
+        expect(new GameOfDrones({ defenderBonus: 2 }).getRoundRules().defenderBonus).toBe(2);
+      });
+    });
   });
 
   describe('onRoundStart', () => {
@@ -20,7 +53,7 @@ describe('Game of Drones', () => {
       expect(game.player2).toBeDefined();
     });
 
-    it('should provide game a way to signal the end of the round', () => {
+    it('should be provided a way to signal the end of the round', () => {
       let game = new GameOfDrones();
       let endRound = jasmine.createSpy('endRound');
       game.onRoundStart(endRound);

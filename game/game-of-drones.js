@@ -1,4 +1,4 @@
-import { PlayOutcome, RoundResult } from '../framework/framework.js';
+import { PlayOutcome } from '../framework/index.js';
 
 const DEFENDER_ADVANTAGE_BONUS = 1;
 
@@ -6,8 +6,15 @@ class GameOfDrones {
   constructor(config) {
     let defaultRules = { rounds: 10, turns: 10 };
     let configuredRules = Object.assign({}, defaultRules, config);
+
     this.matchRules = { rounds: configuredRules.rounds };
-    this.roundRules = { turns: configuredRules.turns };
+    
+    this.defenderBonus = configuredRules.defenderBonus || 1;
+    this.turnCountGenerator = (typeof configuredRules.turns == 'function')
+      ? configuredRules.turns
+      : () => configuredRules.turns;
+
+    this.roundNumber = 1;
   }
 
   /* +++++++++++++++ */
@@ -20,11 +27,15 @@ class GameOfDrones {
   onMatchStart() { /* Nothing special on Match start */ }
 
   getRoundRules() {
-    return this.roundRules;
+    return {
+      turns: this.turnCountGenerator(this.roundNumber),
+      defenderBonus: this.defenderBonus
+    };
   }
 
   onRoundStart(signalEndOfRound) {
     this.initializeRound(signalEndOfRound);
+    this.roundNumber++;
   }
 
   getPlayer1TurnState() {
@@ -203,9 +214,9 @@ class PlayerState {
   }
 }
 
-class GameRoundResult extends RoundResult {
+class GameRoundResult {
   constructor(player1, player2, outcome, turnsPlayed) {
-    super(outcome);
+    this.outcome = outcome;
     this.turnsPlayed = turnsPlayed;
     this.player1 = player1.toRoundEndState();
     this.player2 = player2.toRoundEndState();
@@ -218,9 +229,9 @@ const PlayerOutcome = {
   DRAW: 'DRAW'
 }
 
-class PlayerRoundResult extends RoundResult {
+class PlayerRoundResult {
   constructor(player, otherPlayer, playerOutcome, turnsPlayed) {
-    super(playerOutcome);
+    this.outcome = playerOutcome;
     this.turnsPlayed = turnsPlayed;
     this.you = player.toRoundEndState();
     this.them = otherPlayer.toRoundEndState();
