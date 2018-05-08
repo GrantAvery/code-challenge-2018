@@ -19,6 +19,18 @@ Participation in the Code Challenge consists of writing a Javascript `function` 
 
 A simple (albeit unsophisticated) bot is producible in a matter of minutes.
 
+## Getting Started
+
+1. Checkout the repo
+
+2. Run `npm install`
+
+3. Create your bot (try using one of the templates)
+
+4. Modify `battle-stage.js` to import your bot and pit it against one of the example bots
+
+5. Run `npm run battle` to execute the Match and see your bot in action!
+
 ## Submitting Your Bot
 
 After your bot has been created, it should be submitted it to us prior to the Code Challenge Event. There are several available avenues to submit your creation. You could:
