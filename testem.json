@@ -6,6 +6,7 @@
     "game/*.js",
     "bots/*.js"
   ],
+  "client_decycle_depth": 10,
   "launch_in_dev": [
     "Chrome"
   ]

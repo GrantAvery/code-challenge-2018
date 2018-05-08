@@ -1,6 +1,6 @@
 import { PlayOutcome } from './consts.js';
-import { RoundResult } from '../framework/round.js';
-import { Tournament, Bracket, BracketMatch } from './tournament.js';
+import { RoundResult } from './round.js';
+import { Tournament, Bracket, BracketMatch, RoundRobin } from './tournament.js';
 
 describe('BracketMatch', () => {
   let dummyGame = {};
@@ -39,6 +39,55 @@ describe('BracketMatch', () => {
     let bracketMatch = new BracketMatch(gameWherePlayer2AlwaysWins, player1, player2);
 
     expect(bracketMatch.resolve()).toBe(player2);
+  });
+});
+
+describe('Round Robin', () => {
+  let dummyGame = {};
+
+  it('should fail to instantiate with zero Players', () => {
+    expect(() => new RoundRobin(dummyGame)).toThrowError();
+  });
+
+  describe('round creation', () => {
+    it('should create n-1 rounds for even values of n', () => {
+      expect(new RoundRobin(dummyGame, [
+        { meta: { name: 'a' }},
+        { meta: { name: 'b' }},
+      ]).rounds.length).toBe(1);
+      expect(new RoundRobin(dummyGame, [
+        { meta: { name: 'a' }},
+        { meta: { name: 'b' }},
+        { meta: { name: 'c' }},
+        { meta: { name: 'd' }},
+      ]).rounds.length).toBe(3);
+      expect(new RoundRobin(dummyGame, [
+        { meta: { name: 'a' }},
+        { meta: { name: 'b' }},
+        { meta: { name: 'c' }},
+        { meta: { name: 'd' }},
+        { meta: { name: 'e' }},
+        { meta: { name: 'f' }},
+      ]).rounds.length).toBe(5);
+    });
+
+    it('should create n rounds for odd values of n', () => {
+      expect(new RoundRobin(dummyGame, [
+        { meta: { name: 'a' }},
+      ]).rounds.length).toBe(1);
+      expect(new RoundRobin(dummyGame, [
+        { meta: { name: 'a' }},
+        { meta: { name: 'b' }},
+        { meta: { name: 'c' }},
+      ]).rounds.length).toBe(3);
+      expect(new RoundRobin(dummyGame, [
+        { meta: { name: 'a' }},
+        { meta: { name: 'b' }},
+        { meta: { name: 'c' }},
+        { meta: { name: 'd' }},
+        { meta: { name: 'e' }},
+      ]).rounds.length).toBe(5);
+    });
   });
 });
 

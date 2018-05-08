@@ -9,7 +9,7 @@ import Randomonium from './example-bots/random-choices.js';
 let match = new Match({
   game: new GameOfDrones({ rounds: 1000 }),
   player1: Randomonium(),
-  player2: ZergRusher()
+  player2: AdaptiveDefender()
 });
 
 console.log(JSON.stringify(match.play(), null, 2));

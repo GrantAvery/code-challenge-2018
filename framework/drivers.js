@@ -17,7 +17,7 @@ class PlayerDriver {
   constructor(player) {
     this.player = player;
 
-    this.meta = typeof player.meta == 'object'
+    this.meta = player && typeof player.meta == 'object'
       ? player.meta
       : { name: 'Anonymous Player'};
   }
