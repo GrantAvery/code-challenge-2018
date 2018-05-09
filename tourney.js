@@ -12,6 +12,7 @@ import TomJahncke from './bots/tawj.js';
 import GrantBot from './bots/GrantBot.js';
 import Zephyr from './bots/zephyr.js';
 import SniperRush from './bots/sniper-rush.js'
+import Drozen from './bots/bot.jarchow.js';
 
 let game = new GameOfDrones({
   rounds: 1000
@@ -26,7 +27,8 @@ let tourney = new RoundRobin(game, [
   TomJahncke,
   Zephyr,
   SniperRush,
-  GrantBot
+  GrantBot,
+  Drozen
 ]);
 
 console.log(JSON.stringify(tourney.play(), null, 2));
