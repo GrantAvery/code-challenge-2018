@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "battle": "node battle.js",
+    "tourney": "node run-tourney.js",
     "test": "testem"
   },
   "repository": {
