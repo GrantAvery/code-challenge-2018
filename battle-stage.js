@@ -6,9 +6,11 @@ import ZergRusher from './example-bots/zerg-rush.js';
 import HardHittingPacifist from './example-bots/hard-hitting-pacifist.js';
 import Randomonium from './example-bots/random-choices.js';
 
+import SkyNet from './bots/skynet-v1.js';
+
 let match = new Match({
   game: new GameOfDrones({ rounds: 1000 }),
-  player1: Randomonium(),
+  player1: SkyNet(),
   player2: AdaptiveDefender()
 });
 

@@ -34,11 +34,9 @@ class RoundRobin {
     let players = [];
     for (let player of initPlayers) {
       if (!player || !player.meta || !player.meta.name) {
-        console.warn("Invalid Player or Player missing metadata -- player omitted from tournament");
         continue;
       }
       if (player.meta.name in names) {
-        console.warn("Duplicate Player name detected -- player omitted from tournament");
         continue;
       }
       names[player.meta.name] = 1;
@@ -59,7 +57,14 @@ class RoundRobin {
     // Setup stats
     this.statistics = {};
     for (let player of players) {
-      this.statistics[player] = {}; // TODO: Stats
+      let playerName = player.meta.name;
+      let playerAuthor = player.meta.author;
+      this.statistics[playerName] = {
+        name: playerName,
+        author: playerAuthor,
+        wins: 0,
+        outcomes: { }
+      };
     }
 
     // Setup rounds
@@ -80,17 +85,63 @@ class RoundRobin {
         round.push(new Match({
           game,
           player1: roundPlayers.shift(),
-          player2: roundPlayers.shift()
+          player2: roundPlayers.pop()
         }));
       }
 
       rounds.push(round);
-
-      //console.log('ROUND ' + roundIndex);
-      //round.forEach(match => console.log(match.player1.meta.name + ' vs ' + match.player2.meta.name));
     }
 
     this.rounds = rounds;
+    console.log(players);
+
+    for (let round of rounds) {
+      console.log('');
+      console.log('');
+      console.log('NEXT ROUND');
+      for (let match of round) {
+        console.log(match.player1.meta.name + " vs " + match.player2.meta.name);
+      }
+    }
+  }
+
+  play() {
+    for (let round of this.rounds) {
+      for (let match of round) {
+        let results = match.play();
+        let { player1, player2, outcome, roundTotals } = results;
+        
+        let player1Name = player1.name,
+            player2Name = player2.name,
+            winner = outcome == PlayOutcome.PLAYER_1 ? player1Name
+                        : PlayOutcome.PLAYER_2 ? player2Name
+                        : null;
+        
+        if (winner) {
+          this.statistics[winner].wins++;
+        }
+
+        let player1Outcome = winner == player1Name ? 'WIN' : winner == player2Name ? 'LOSS' : 'DRAW';
+        let player2Outcome = winner == player1Name ? 'LOSS' : winner == player2Name ? 'WIN' : 'DRAW';
+
+        let player1ResultString = `${player1Outcome} (W:${roundTotals.player1Wins}/ L:${roundTotals.player2Wins}/ D:${roundTotals.draws})`;
+        let player2ResultString = `${player2Outcome} (W:${roundTotals.player2Wins}/ L:${roundTotals.player1Wins}/ D:${roundTotals.draws})`;
+
+        this.statistics[player1Name].outcomes[player2Name] = player1ResultString;
+        this.statistics[player2Name].outcomes[player1Name] = player2ResultString;
+      }
+    }
+
+    let mostWins = 0;
+    let overallWinner = null;
+    for (let playerName in this.statistics) {
+      let playerStats = this.statistics[playerName];
+      if (playerStats.wins > mostWins) {
+        mostWins = playerStats.wins;
+        overallWinner = playerStats;
+      }
+    }
+    return Object.assign({}, this.statistics, { overallWinner: { name: overallWinner, wins: mostWins } });
   }
 }
 
