@@ -32,7 +32,8 @@ class RoundRobin {
     // Validate players (must have meta.name, and it must be unique)
     let names = {};
     let players = [];
-    for (let player of initPlayers) {
+    for (let playerFn of initPlayers) {
+      let player = playerFn();
       if (!player || !player.meta || !player.meta.name) {
         continue;
       }
@@ -40,23 +41,25 @@ class RoundRobin {
         continue;
       }
       names[player.meta.name] = 1;
-      players.push(player);
+      players.push(playerFn);
     }
 
     if (players.length < 1) {
       throw new Error("No eligible players available to run Tournament");
     }
 
-    let rounds = [];
-
     // Add 'Bye' player, if needed
     if (players.length % 2 == 1) {
-      players.push({ meta: { name: 'Dummy Bot (Bye)' }});
+      players.push(() => { return { meta: { name: 'Dummy Bot (Bye)' }}});
     }
+
+    let rounds = [];
 
     // Setup stats
     this.statistics = {};
-    for (let player of players) {
+    for (let playerFn of players) {
+      let player = playerFn();
+      console.log(player);
       let playerName = player.meta.name;
       let playerAuthor = player.meta.author;
       this.statistics[playerName] = {
@@ -80,12 +83,17 @@ class RoundRobin {
 
       let round = [];
 
+      for (let player of roundPlayers) {
+        console.log(player);
+        console.log(typeof player);
+      }
+
       // Create the round
       while (roundPlayers.length > 0) {
         round.push(new Match({
           game,
-          player1: roundPlayers.shift(),
-          player2: roundPlayers.pop()
+          player1: roundPlayers.shift()(),
+          player2: roundPlayers.pop()()
         }));
       }
 

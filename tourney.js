@@ -18,15 +18,15 @@ let game = new GameOfDrones({
 });
 
 let tourney = new RoundRobin(game, [
-  AdaptiveDefender(),
-  ZergRusher(),
-  HardHittingPacifist(),
-  Randomonium(),
-  PeteMooney(),
-  TomJahncke(),
-  Zephyr(),
-  SniperRush(),
-  GrantBot()
+  AdaptiveDefender,
+  ZergRusher,
+  HardHittingPacifist,
+  Randomonium,
+  PeteMooney,
+  TomJahncke,
+  Zephyr,
+  SniperRush,
+  GrantBot
 ]);
 
 console.log(JSON.stringify(tourney.play(), null, 2));
